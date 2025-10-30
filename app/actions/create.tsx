@@ -236,7 +236,7 @@ export default function CreateActionScreen() {
                 setIsFree(checked);
                 if (checked) setPrice('');
               }}
-              tintColors={{ true: '#10B981', false: '#9CA3AF' }}
+              color={isFree ? '#10B981' : '#9CA3AF'}
             />
             <Text style={styles.checkboxLabel}>Evento gratuito</Text>
           </View>
