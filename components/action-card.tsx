@@ -6,7 +6,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Calendar, Clock, MapPin, Tag, Users } from 'lucide-react-native';
-import { CommunityAction } from '@/community-action';
+import { CommunityAction } from '@/interfaces/community-action';
 interface ActionCardProps {
   action: CommunityAction;
   onClick?: () => void;

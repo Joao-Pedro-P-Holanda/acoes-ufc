@@ -56,6 +56,7 @@ export default function CreateActionScreen() {
     }
 
     addAction({
+      id: Date.now().toString(),
       name,
       description,
       startDate,

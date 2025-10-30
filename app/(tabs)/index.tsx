@@ -11,7 +11,7 @@ import { Plus } from 'lucide-react-native';
 import { ActionCard} from '../../components/action-card';
 import { useActions } from '@/hooks/use-actions';
 import { CommunityAction } from '@/interfaces/community-action';
-import { Link, useRouter } from 'expo-router';
+import { Link } from 'expo-router';
 
 export default function HomeScreen() {
   const { actions } = useActions();
