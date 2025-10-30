@@ -27,6 +27,19 @@ export const Colors = {
   },
 };
 
+// App-specific color palette
+export const AppColors = {
+  primary: '#10B981',      // Primary green color
+  primaryLight: 'rgba(16, 185, 129, 0.1)',
+  primaryDark: '#059669',
+  gray: '#9CA3AF',
+  grayLight: '#F3F4F6',
+  grayBorder: '#E5E7EB',
+  textPrimary: '#000000',
+  textSecondary: '#6B7280',
+  white: '#FFFFFF',
+};
+
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */

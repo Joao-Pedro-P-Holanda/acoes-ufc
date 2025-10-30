@@ -14,6 +14,8 @@ import { X } from 'lucide-react-native';
 import { Picker } from '@react-native-picker/picker';
 import CheckBox from 'expo-checkbox';
 import { useActions } from '@/hooks/use-actions';
+import { v4 as uuidv4 } from 'uuid';
+import { AppColors } from '@/constants/theme';
 
 export default function CreateActionScreen() {
   const [name, setName] = useState('');
@@ -56,7 +58,7 @@ export default function CreateActionScreen() {
     }
 
     addAction({
-      id: Date.now().toString(),
+      id: uuidv4(),
       name,
       description,
       startDate,
@@ -236,7 +238,7 @@ export default function CreateActionScreen() {
                 setIsFree(checked);
                 if (checked) setPrice('');
               }}
-              color={isFree ? '#10B981' : '#9CA3AF'}
+              color={isFree ? AppColors.primary : AppColors.gray}
             />
             <Text style={styles.checkboxLabel}>Evento gratuito</Text>
           </View>
