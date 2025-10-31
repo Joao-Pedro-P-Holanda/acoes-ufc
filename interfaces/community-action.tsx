@@ -14,8 +14,6 @@ export interface CommunityAction {
   maxParticipants: number;
   price?: number;
   originalLink?: string;
-  latitude?: number;
-  longitude?: number;
 }
 
 

@@ -55,8 +55,6 @@ export function useActions() {
             maxParticipants: 20,
             price: 15,
             originalLink: 'https://exemplo.com/oficina-artesanato',
-            latitude: -4.9600,
-            longitude: -39.0100,
           },
         ];
         
