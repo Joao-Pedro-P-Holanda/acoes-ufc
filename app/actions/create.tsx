@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
-  Alert,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
@@ -14,80 +13,36 @@ import { X } from 'lucide-react-native';
 import { Picker } from '@react-native-picker/picker';
 import CheckBox from 'expo-checkbox';
 import { useActions } from '@/hooks/use-actions';
+import { useForm, Controller } from 'react-hook-form';
+import { CommunityAction } from '@/interfaces/community-action';
+import { Button } from '@react-navigation/elements';
 
 export default function CreateActionScreen() {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [frequency, setFrequency] = useState('');
-  const [contact, setContact] = useState('');
-  const [location, setLocation] = useState('');
+  const { control, handleSubmit, watch, setValue } = useForm<CommunityAction>({
+  });
+
+  const { addAction } = useActions();
   const [currentTag, setCurrentTag] = useState('');
-  const [tags, setTags] = useState<string[]>([]);
-  const [isFull, setIsFull] = useState(false);
-  const [maxParticipants, setMaxParticipants] = useState('');
-  const [price, setPrice] = useState('');
-  const [isFree, setIsFree] = useState(true);
-  const [originalLink, setOriginalLink] = useState('');
+
+  const isFree = watch('isFree');
+  const tags = watch('tags') || [];
+
+  const onSubmit = async (action: CommunityAction) => {
+    await addAction(action);
+  };
 
   const handleAddTag = () => {
-    if (currentTag.trim() && !tags.includes(currentTag.trim())) {
-      setTags([...tags, currentTag.trim()]);
+    if (currentTag.trim()) {
+      const currentTags = tags;
+      if (!currentTags.includes(currentTag.trim())) {
+        setValue('tags', [...currentTags, currentTag.trim()]);
+      }
       setCurrentTag('');
     }
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
-  };
-
-  const { addAction } = useActions()
-
-  const handleSubmit = () => {
-    if (!name || !description || !startDate || !endDate || !startTime || !endTime || !contact || !location || tags.length === 0 || !maxParticipants) {
-      Alert.alert(
-        'Campos obrigatórios',
-        'Por favor, preencha todos os campos obrigatórios e adicione pelo menos uma tag.'
-      );
-      return;
-    }
-
-    addAction({
-      name,
-      description,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-      frequency: frequency || undefined,
-      contact,
-      location,
-      tags,
-      isFull,
-      maxParticipants: parseInt(maxParticipants),
-      price: isFree ? 0 : (price ? parseFloat(price) : undefined),
-      originalLink: originalLink || undefined,
-    });
-
-    // Reset form
-    setName('');
-    setDescription('');
-    setStartDate('');
-    setEndDate('');
-    setStartTime('');
-    setEndTime('');
-    setFrequency('');
-    setContact('');
-    setLocation('');
-    setTags([]);
-    setIsFull(false);
-    setMaxParticipants('');
-    setPrice('');
-    setIsFree(true);
-    setOriginalLink('');
+    setValue('tags', tags.filter(tag => tag !== tagToRemove));
   };
 
   return (
@@ -96,218 +51,318 @@ export default function CreateActionScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Nome da Ação *</Text>
-          <TextInput
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-            placeholder="Ex: Limpeza do Parque Central"
-            placeholderTextColor="#9CA3AF"
-          />
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Descrição *</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Descreva detalhadamente a ação comunitária..."
-            placeholderTextColor="#9CA3AF"
-            multiline
-            numberOfLines={4}
-            textAlignVertical="top"
-          />
-        </View>
-
-        <View style={styles.row}>
-          <View style={styles.halfWidth}>
-            <Text style={styles.label}>Data de Início *</Text>
-            <TextInput
-              style={styles.input}
-              value={startDate}
-              onChangeText={setStartDate}
-              placeholder="DD/MM/AAAA"
-              placeholderTextColor="#9CA3AF"
+        <View>
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Nome da Ação *</Text>
+            <Controller
+              control={control}
+              name="name"
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={styles.input}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  placeholder="Ex: Limpeza do Parque Central"
+                  placeholderTextColor="#9CA3AF"
+                />
+              )}
             />
           </View>
-          <View style={styles.halfWidth}>
-            <Text style={styles.label}>Data de Fim *</Text>
-            <TextInput
-              style={styles.input}
-              value={endDate}
-              onChangeText={setEndDate}
-              placeholder="DD/MM/AAAA"
-              placeholderTextColor="#9CA3AF"
+
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Descrição *</Text>
+            <Controller
+              control={control}
+              name="description"
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  placeholder="Descreva detalhadamente a ação comunitária..."
+                  placeholderTextColor="#9CA3AF"
+                  multiline
+                  numberOfLines={4}
+                  textAlignVertical="top"
+                />
+              )}
             />
           </View>
-        </View>
 
-        <View style={styles.row}>
-          <View style={styles.halfWidth}>
-            <Text style={styles.label}>Horário de Início *</Text>
-            <TextInput
-              style={styles.input}
-              value={startTime}
-              onChangeText={setStartTime}
-              placeholder="HH:MM"
-              placeholderTextColor="#9CA3AF"
-            />
-          </View>
-          <View style={styles.halfWidth}>
-            <Text style={styles.label}>Horário de Fim *</Text>
-            <TextInput
-              style={styles.input}
-              value={endTime}
-              onChangeText={setEndTime}
-              placeholder="HH:MM"
-              placeholderTextColor="#9CA3AF"
-            />
-          </View>
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Frequência (opcional)</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={frequency}
-              onValueChange={setFrequency}
-              style={styles.picker}
-            >
-              <Picker.Item label="Selecione a frequência" value="" />
-              <Picker.Item label="Única" value="Única" />
-              <Picker.Item label="Diária" value="Diária" />
-              <Picker.Item label="Semanal" value="Semanal" />
-              <Picker.Item label="Quinzenal" value="Quinzenal" />
-              <Picker.Item label="Mensal" value="Mensal" />
-            </Picker>
-          </View>
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Local *</Text>
-          <TextInput
-            style={styles.input}
-            value={location}
-            onChangeText={setLocation}
-            placeholder="Ex: Parque Central, Rua das Flores, 123"
-            placeholderTextColor="#9CA3AF"
-          />
-        </View>
-
-        <Text style={styles.hint}>
-          Adicione coordenadas para exibir a ação no mapa
-        </Text>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Informações de Contato *</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            value={contact}
-            onChangeText={setContact}
-            placeholder="Ex: email@exemplo.com, (11) 98765-4321"
-            placeholderTextColor="#9CA3AF"
-            multiline
-            numberOfLines={3}
-            textAlignVertical="top"
-          />
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Número Máximo de Participantes *</Text>
-          <TextInput
-            style={styles.input}
-            value={maxParticipants}
-            onChangeText={setMaxParticipants}
-            placeholder="Ex: 50"
-            placeholderTextColor="#9CA3AF"
-            keyboardType="number-pad"
-          />
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Inscrição</Text>
-          <View style={styles.checkboxRow}>
-            <CheckBox
-              value={isFree}
-              onValueChange={(checked) => {
-                setIsFree(checked);
-                if (checked) setPrice('');
-              }}
-              tintColors={{ true: '#10B981', false: '#9CA3AF' }}
-            />
-            <Text style={styles.checkboxLabel}>Evento gratuito</Text>
-          </View>
-          {!isFree && (
-            <View style={styles.formGroup}>
-              <Text style={styles.label}>Preço da Inscrição (R$)</Text>
-              <TextInput
-                style={styles.input}
-                value={price}
-                onChangeText={setPrice}
-                placeholder="Ex: 25.00"
-                placeholderTextColor="#9CA3AF"
-                keyboardType="decimal-pad"
+          <View style={styles.row}>
+            <View style={styles.halfWidth}>
+              <Text style={styles.label}>Data de Início *</Text>
+              <Controller
+                control={control}
+                name="startDate"
+                rules={{ required: true }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={styles.input}
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="DD/MM/AAAA"
+                    placeholderTextColor="#9CA3AF"
+                  />
+                )}
               />
             </View>
-          )}
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Link Original (Opcional)</Text>
-          <TextInput
-            style={styles.input}
-            value={originalLink}
-            onChangeText={setOriginalLink}
-            placeholder="https://exemplo.com/evento"
-            placeholderTextColor="#9CA3AF"
-            keyboardType="url"
-            autoCapitalize="none"
-          />
-          <Text style={styles.hint}>
-            Link para mais informações sobre a ação (site, formulário, etc.)
-          </Text>
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Tags *</Text>
-          <View style={styles.tagInputRow}>
-            <TextInput
-              style={[styles.input, styles.tagInput]}
-              value={currentTag}
-              onChangeText={setCurrentTag}
-              placeholder="Digite uma tag"
-              placeholderTextColor="#9CA3AF"
-              onSubmitEditing={handleAddTag}
-            />
-            <TouchableOpacity
-              onPress={handleAddTag}
-              style={styles.addTagButton}
-            >
-              <Text style={styles.addTagButtonText}>Adicionar</Text>
-            </TouchableOpacity>
-          </View>
-          {tags.length > 0 && (
-            <View style={styles.tagsContainer}>
-              {tags.map((tag, index) => (
-                <View key={index} style={styles.tag}>
-                  <Text style={styles.tagText}>{tag}</Text>
-                  <TouchableOpacity onPress={() => handleRemoveTag(tag)}>
-                    <X color="#059669" size={14} />
-                  </TouchableOpacity>
-                </View>
-              ))}
+            <View style={styles.halfWidth}>
+              <Text style={styles.label}>Data de Fim *</Text>
+              <Controller
+                control={control}
+                name="endDate"
+                rules={{ required: true }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={styles.input}
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="DD/MM/AAAA"
+                    placeholderTextColor="#9CA3AF"
+                  />
+                )}
+              />
             </View>
-          )}
-        </View>
+          </View>
 
-        <TouchableOpacity
-          onPress={handleSubmit}
-          style={styles.submitButton}
-        >
-          <Text style={styles.submitButtonText}>Publicar Ação</Text>
-        </TouchableOpacity>
+          <View style={styles.row}>
+            <View style={styles.halfWidth}>
+              <Text style={styles.label}>Horário de Início *</Text>
+              <Controller
+                control={control}
+                name="startTime"
+                rules={{ required: true }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={styles.input}
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="HH:MM"
+                    placeholderTextColor="#9CA3AF"
+                  />
+                )}
+              />
+            </View>
+            <View style={styles.halfWidth}>
+              <Text style={styles.label}>Horário de Fim *</Text>
+              <Controller
+                control={control}
+                name="endTime"
+                rules={{ required: true }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={styles.input}
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="HH:MM"
+                    placeholderTextColor="#9CA3AF"
+                  />
+                )}
+              />
+            </View>
+          </View>
+
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Frequência (opcional)</Text>
+            <View style={styles.pickerContainer}>
+              <Controller
+                control={control}
+                name="frequency"
+                render={({ field: { onChange, value } }) => (
+                  <Picker
+                    selectedValue={value}
+                    onValueChange={onChange}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Selecione a frequência" value="" />
+                    <Picker.Item label="Única" value="Única" />
+                    <Picker.Item label="Diária" value="Diária" />
+                    <Picker.Item label="Semanal" value="Semanal" />
+                    <Picker.Item label="Quinzenal" value="Quinzenal" />
+                    <Picker.Item label="Mensal" value="Mensal" />
+                  </Picker>
+                )}
+              />
+            </View>
+          </View>
+
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Local *</Text>
+            <Controller
+              control={control}
+              name="location"
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={styles.input}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  placeholder="Ex: Parque Central, Rua das Flores, 123"
+                  placeholderTextColor="#9CA3AF"
+                />
+              )}
+            />
+          </View>
+
+          <Text style={styles.hint}>
+            Adicione coordenadas para exibir a ação no mapa
+          </Text>
+
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Informações de Contato *</Text>
+            <Controller
+              control={control}
+              name="contact"
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  placeholder="Ex: email@exemplo.com, (11) 98765-4321"
+                  placeholderTextColor="#9CA3AF"
+                  multiline
+                  numberOfLines={3}
+                  textAlignVertical="top"
+                />
+              )}
+            />
+          </View>
+
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Número Máximo de Participantes *</Text>
+            <Controller
+              control={control}
+              name="maxParticipants"
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={styles.input}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  placeholder="Ex: 50"
+                  placeholderTextColor="#9CA3AF"
+                  keyboardType="number-pad"
+                />
+              )}
+            />
+          </View>
+
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Inscrição</Text>
+            <Controller
+              control={control}
+              name="isFree"
+              render={({ field: { onChange, value } }) => (
+                <View style={styles.checkboxRow}>
+                  <CheckBox
+                    value={value}
+                    onValueChange={(checked) => {
+                      onChange(checked);
+                      if (checked) setValue('price', 0);
+                    }}
+                    color={value ? '#10B981' : '#9CA3AF'}
+                  />
+                  <Text style={styles.checkboxLabel}>Evento gratuito</Text>
+                </View>
+              )}
+            />
+            {!isFree && (
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Preço da Inscrição (R$)</Text>
+                <Controller
+                  control={control}
+                  name="price"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.input}
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      placeholder="Ex: 25.00"
+                      placeholderTextColor="#9CA3AF"
+                      keyboardType="numeric"
+                    />
+                  )}
+                />
+              </View>
+            )}
+          </View>
+
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Link Original (Opcional)</Text>
+            <Controller
+              control={control}
+              name="originalLink"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={styles.input}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  placeholder="https://exemplo.com/evento"
+                  placeholderTextColor="#9CA3AF"
+                  keyboardType="url"
+                  autoCapitalize="none"
+                />
+              )}
+            />
+            <Text style={styles.hint}>
+              Link para mais informações sobre a ação (site, formulário, etc.)
+            </Text>
+          </View>
+
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Tags *</Text>
+            <View style={styles.tagInputRow}>
+              <TextInput
+                style={[styles.input, styles.tagInput]}
+                value={currentTag}
+                onChangeText={setCurrentTag}
+                placeholder="Digite uma tag"
+                placeholderTextColor="#9CA3AF"
+                onSubmitEditing={handleAddTag}
+              />
+              <TouchableOpacity
+                onPress={handleAddTag}
+                style={styles.addTagButton}
+              >
+                <Text style={styles.addTagButtonText}>Adicionar</Text>
+              </TouchableOpacity>
+            </View>
+            {tags.length > 0 && (
+              <View style={styles.tagsContainer}>
+                {tags.map((tag, index) => (
+                  <View key={index} style={styles.tag}>
+                    <Text style={styles.tagText}>{tag}</Text>
+                    <TouchableOpacity onPress={() => handleRemoveTag(tag)}>
+                      <X color="#059669" size={14} />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            )}
+          </View>
+
+          <Button
+            style={styles.submitButton}
+            onPress={handleSubmit(onSubmit)}
+          >
+            Publicar Ação
+          </Button>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
