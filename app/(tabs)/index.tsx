@@ -8,19 +8,21 @@ import {
   FlatList,
 } from 'react-native';
 import { Plus } from 'lucide-react-native';
-import { ActionCard} from '../../components/action-card';
+import { ActionCard } from '../../components/action-card';
 import { useActions } from '@/hooks/use-actions';
 import { CommunityAction } from '@/interfaces/community-action';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 
 export default function HomeScreen() {
   const { actions } = useActions();
-  
+
+  const router = useRouter();
+
   const getActionsByTag = () => {
     // TODO: consider an action in a single more relevant tag,
     // currently, if an action has more than one tag it will appear multiple times
     const tagMap = new Map<string, CommunityAction[]>();
-    
+
     actions.forEach((action) => {
       action.tags.forEach((tag) => {
         if (!tagMap.has(tag)) {
@@ -39,7 +41,7 @@ export default function HomeScreen() {
 
   const renderTagSection = ({ item }: { item: [string, CommunityAction[]] }) => {
     const [tag, tagActions] = item;
-    
+
     return (
       <View style={styles.tagSection}>
         <View style={styles.tagHeader}>
@@ -48,15 +50,16 @@ export default function HomeScreen() {
             {tagActions.length} {tagActions.length === 1 ? 'ação' : 'ações'}
           </Text>
         </View>
-        
+
         <FlatList
           horizontal
           data={tagActions}
           keyExtractor={(action) => action.id}
           renderItem={({ item: action }) => (
             <View style={styles.carouselItem}>
-              <ActionCard 
+              <ActionCard
                 action={action}
+                onClick={() => router.navigate({ pathname: `actions/${action.id}` })}
               />
             </View>
           )}
@@ -69,12 +72,12 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
       >
         <Text style={styles.title}>Ações Recentes</Text>
-        
+
         {actions.length === 0 ? (
           <View style={styles.emptyState}>
             <Text style={styles.emptyText}>
@@ -94,15 +97,15 @@ export default function HomeScreen() {
           />
         )}
       </ScrollView>
-      
-      <Link href={{pathname:"/actions/create"}} asChild>
-      <TouchableOpacity
-        style={styles.fab}
-        activeOpacity={0.8}
-      >
-        <Plus color="#ffffff" size={28} />
-      </TouchableOpacity>
-</Link>
+
+      <Link href={{ pathname: "/actions/create" }} asChild>
+        <TouchableOpacity
+          style={styles.fab}
+          activeOpacity={0.8}
+        >
+          <Plus color="#ffffff" size={28} />
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 }

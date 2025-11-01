@@ -9,17 +9,21 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { v4 as uuidv4 } from 'uuid';
 import { X } from 'lucide-react-native';
 import { Picker } from '@react-native-picker/picker';
 import CheckBox from 'expo-checkbox';
 import { useActions } from '@/hooks/use-actions';
 import { useForm, Controller } from 'react-hook-form';
+import { useRouter } from "expo-router"
 import { CommunityAction } from '@/interfaces/community-action';
 import { Button } from '@react-navigation/elements';
 
 export default function CreateActionScreen() {
   const { control, handleSubmit, watch, setValue } = useForm<CommunityAction>({
   });
+
+  const router = useRouter();
 
   const { addAction } = useActions();
   const [currentTag, setCurrentTag] = useState('');
@@ -28,7 +32,9 @@ export default function CreateActionScreen() {
   const tags = watch('tags') || [];
 
   const onSubmit = async (action: CommunityAction) => {
+    action.id = uuidv4();
     await addAction(action);
+    router.navigate({pathname:`actions/${action.id}`})
   };
 
   const handleAddTag = () => {

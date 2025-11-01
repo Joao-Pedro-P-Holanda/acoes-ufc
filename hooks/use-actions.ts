@@ -4,7 +4,7 @@ import { storage } from '@/utils/storage';
 
 const STORAGE_KEY = 'community-actions';
 
-export function useActions() {
+export function useActions(id: string | undefined = undefined) {
   const [actions, setActions] = useState<CommunityAction[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,9 +16,12 @@ export function useActions() {
     try {
       setLoading(true);
       // Try to load from storage first
-      const storedActions = await storage.get<CommunityAction[]>(STORAGE_KEY);
+      let storedActions = await storage.get<CommunityAction[]>(STORAGE_KEY);
 
       if (storedActions && storedActions.length > 0) {
+        if (id) {
+          storedActions = storedActions.filter((value) => value.id == id)
+        }
         setActions(storedActions);
       }
     } catch (error) {
