@@ -17,50 +17,9 @@ export function useActions() {
       setLoading(true);
       // Try to load from storage first
       const storedActions = await storage.get<CommunityAction[]>(STORAGE_KEY);
-      
+
       if (storedActions && storedActions.length > 0) {
         setActions(storedActions);
-      } else {
-        // Hardcoded actions for initial testing/demo
-        const hardcodedActions: CommunityAction[] = [
-          {
-            id: '2',
-            name: 'Aula de Yoga na Praça',
-            description: 'Aulas gratuitas de yoga ao ar livre. Todos os níveis são bem-vindos. Traga seu tapete!',
-            startDate: '2024-11-10',
-            endDate: '2024-12-20',
-            startTime: '07:00',
-            endTime: '08:00',
-            frequency: 'Semanal',
-            contact: 'yoga.comunidade@email.com',
-            tags: ['Bem-estar'],
-            location: 'Praça da Matriz',
-            isFull: false,
-            maxParticipants: 30,
-            price: 0,
-          },
-          {
-            id: '3',
-            name: 'Oficina de Artesanato',
-            description: 'Aprenda técnicas de artesanato com materiais recicláveis. Oficina voltada para a comunidade.',
-            startDate: '2024-11-18',
-            endDate: '2024-11-18',
-            startTime: '14:00',
-            endTime: '17:00',
-            frequency: 'Única',
-            contact: 'artesanato@comunidade.org\n(85) 91234-5678',
-            tags: ['Arte'],
-            location: 'Centro Comunitário do Bairro Alto',
-            isFull: true,
-            maxParticipants: 20,
-            price: 15,
-            originalLink: 'https://exemplo.com/oficina-artesanato',
-          },
-        ];
-        
-        setActions(hardcodedActions);
-        // Save initial actions to storage
-        await storage.set(STORAGE_KEY, hardcodedActions);
       }
     } catch (error) {
       console.error('Failed to load actions:', error);
