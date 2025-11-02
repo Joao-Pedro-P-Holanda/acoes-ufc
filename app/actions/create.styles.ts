@@ -169,4 +169,15 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 24,
+  },
+  buttonFull: {
+    flex: 1,
+  },
+  buttonHalf: {
+    flex: 1,
+  },
 });

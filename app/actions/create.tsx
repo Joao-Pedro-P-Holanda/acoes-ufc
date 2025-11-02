@@ -1,31 +1,28 @@
-import { DateTimeInput } from '@/components/date-time-input';
-import { NumberInputField } from '@/components/number-input-field';
+import { FormStepper } from '@/components/form-stepper';
+import { BasicInfoStep } from '@/components/form-steps/basic-info-step';
+import { DateTimeStep } from '@/components/form-steps/date-time-step';
+import { DetailsStep } from '@/components/form-steps/details-step';
 import { PrimaryButton } from '@/components/primary-button';
-import { TextInputField } from '@/components/text-input-field';
 import { useActions } from '@/hooks/use-actions';
 import { CommunityAction } from '@/interfaces/community-action';
 import { CommunityActionFormData, communityActionSchema } from '@/schemas/community-action.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Picker } from '@react-native-picker/picker';
-import CheckBox from 'expo-checkbox';
 import { useRouter } from "expo-router";
-import { X } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { v4 as uuidv4 } from 'uuid';
 import { styles } from './create.styles';
 
 export default function CreateActionScreen() {
+  const [currentStep, setCurrentStep] = useState(0);
+  
   const { 
     control, 
     handleSubmit, 
@@ -62,6 +59,12 @@ export default function CreateActionScreen() {
   const isFree = watch('isFree');
   const tags = watch('tags') || [];
   const startDate = watch('startDate');
+
+  const steps = [
+    { title: 'Básico', description: 'Nome e descrição' },
+    { title: 'Data/Hora', description: 'Quando acontece' },
+    { title: 'Detalhes', description: 'Local e contato' },
+  ];
 
   // Handlers para validar campos cruzados ao perder foco
   const handleStartDateBlur = async () => {
@@ -128,7 +131,48 @@ export default function CreateActionScreen() {
 
   const minimumEndDate = parseDate(startDate);
 
+  // Validação do step atual antes de avançar
+  const validateCurrentStep = async (): Promise<boolean> => {
+    let fieldsToValidate: (keyof CommunityActionFormData)[] = [];
 
+    switch (currentStep) {
+      case 0: // Informações Básicas
+        fieldsToValidate = ['name', 'description', 'tags'];
+        break;
+      case 1: // Data e Horário
+        fieldsToValidate = ['startDate', 'endDate', 'startTime', 'endTime'];
+        break;
+      case 2: // Detalhes
+        fieldsToValidate = ['location', 'contact', 'maxParticipants'];
+        if (!isFree) {
+          fieldsToValidate.push('price');
+        }
+        break;
+    }
+
+    const result = await trigger(fieldsToValidate);
+    return result;
+  };
+
+  const handleNext = async () => {
+    const isValid = await validateCurrentStep();
+    if (isValid && currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleFinalSubmit = async (data: CommunityActionFormData) => {
+    const isValid = await validateCurrentStep();
+    if (!isValid) return;
+    
+    await onSubmit(data);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -137,235 +181,70 @@ export default function CreateActionScreen() {
     >
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View>
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Nome da Ação *</Text>
-            <TextInputField
+          <FormStepper steps={steps} currentStep={currentStep} />
+
+          {currentStep === 0 && (
+            <BasicInfoStep
               control={control}
-              name="name"
-              error={errors.name}
-              placeholder="Ex: Limpeza do Parque Central"
-              placeholderTextColor="#9CA3AF"
+              errors={errors}
+              tags={tags}
+              currentTag={currentTag}
+              onCurrentTagChange={setCurrentTag}
+              onAddTag={handleAddTag}
+              onRemoveTag={handleRemoveTag}
             />
-          </View>
+          )}
 
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Descrição *</Text>
-            <TextInputField
+          {currentStep === 1 && (
+            <DateTimeStep
               control={control}
-              name="description"
-              error={errors.description}
-              placeholder="Descreva detalhadamente a ação comunitária..."
-              placeholderTextColor="#9CA3AF"
-              multiline
-              numberOfLines={4}
+              errors={errors}
+              minimumEndDate={minimumEndDate}
+              onStartDateBlur={handleStartDateBlur}
+              onEndDateBlur={handleEndDateBlur}
+              onStartTimeBlur={handleStartTimeBlur}
+              onEndTimeBlur={handleEndTimeBlur}
             />
-          </View>
+          )}
 
-          <View style={styles.row}>
-            <View style={styles.halfWidth}>
-              <Text style={styles.label}>Data de Início *</Text>
-              <DateTimeInput
-                control={control}
-                name="startDate"
-                mode="date"
-                error={errors.startDate}
-                onBlurCustom={handleStartDateBlur}
-              />
-            </View>
-            <View style={styles.halfWidth}>
-              <Text style={styles.label}>Data de Fim *</Text>
-              <DateTimeInput
-                control={control}
-                name="endDate"
-                mode="date"
-                minimumDate={minimumEndDate}
-                error={errors.endDate}
-                onBlurCustom={handleEndDateBlur}
-              />
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <View style={styles.halfWidth}>
-              <Text style={styles.label}>Horário de Início *</Text>
-              <DateTimeInput
-                control={control}
-                name="startTime"
-                mode="time"
-                error={errors.startTime}
-                onBlurCustom={handleStartTimeBlur}
-              />
-            </View>
-            <View style={styles.halfWidth}>
-              <Text style={styles.label}>Horário de Fim *</Text>
-              <DateTimeInput
-                control={control}
-                name="endTime"
-                mode="time"
-                error={errors.endTime}
-                onBlurCustom={handleEndTimeBlur}
-              />
-            </View>
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Frequência (opcional)</Text>
-            <View style={styles.pickerContainer}>
-              <Controller
-                control={control}
-                name="frequency"
-                render={({ field: { onChange, value } }) => (
-                  <Picker
-                    selectedValue={value}
-                    onValueChange={onChange}
-                    style={styles.picker}
-                  >
-                    <Picker.Item label="Selecione a frequência" value="" />
-                    <Picker.Item label="Única" value="Única" />
-                    <Picker.Item label="Diária" value="Diária" />
-                    <Picker.Item label="Semanal" value="Semanal" />
-                    <Picker.Item label="Quinzenal" value="Quinzenal" />
-                    <Picker.Item label="Mensal" value="Mensal" />
-                  </Picker>
-                )}
-              />
-            </View>
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Local *</Text>
-            <TextInputField
+          {currentStep === 2 && (
+            <DetailsStep
               control={control}
-              name="location"
-              error={errors.location}
-              placeholder="Ex: Parque Central, Rua das Flores, 123"
-              placeholderTextColor="#9CA3AF"
+              errors={errors}
+              isFree={isFree}
+              onSetValue={setValue}
             />
-          </View>
+          )}
 
-          <Text style={styles.hint}>
-            Adicione coordenadas para exibir a ação no mapa
-          </Text>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Informações de Contato *</Text>
-            <TextInputField
-              control={control}
-              name="contact"
-              error={errors.contact}
-              placeholder="Ex: email@exemplo.com, (11) 98765-4321"
-              placeholderTextColor="#9CA3AF"
-              multiline
-              numberOfLines={3}
-            />
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Número Máximo de Participantes *</Text>
-            <NumberInputField
-              control={control}
-              name="maxParticipants"
-              error={errors.maxParticipants}
-              placeholder="Ex: 50"
-              placeholderTextColor="#9CA3AF"
-              isInteger
-            />
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Inscrição</Text>
-            <Controller
-              control={control}
-              name="isFree"
-              render={({ field: { onChange, value } }) => (
-                <View style={styles.checkboxRow}>
-                  <CheckBox
-                    value={value}
-                    onValueChange={(checked) => {
-                      onChange(checked);
-                      if (checked) setValue('price', 0);
-                    }}
-                    color={value ? '#10B981' : '#9CA3AF'}
-                  />
-                  <Text style={styles.checkboxLabel}>Evento gratuito</Text>
-                </View>
-              )}
-            />
-            {!isFree && (
-              <View style={styles.formGroup}>
-                <Text style={styles.label}>Preço da Inscrição (R$)</Text>
-                <NumberInputField
-                  control={control}
-                  name="price"
-                  error={errors.price}
-                  placeholder="Ex: 25.00"
-                  placeholderTextColor="#9CA3AF"
-                />
-              </View>
-            )}
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Link Original (Opcional)</Text>
-            <TextInputField
-              control={control}
-              name="originalLink"
-              error={errors.originalLink}
-              placeholder="https://exemplo.com/evento"
-              placeholderTextColor="#9CA3AF"
-              keyboardType="url"
-              autoCapitalize="none"
-            />
-            <Text style={styles.hint}>
-              Link para mais informações sobre a ação (site, formulário, etc.)
-            </Text>
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Tags *</Text>
-            <View style={styles.tagInputRow}>
-              <TextInput
-                style={[styles.input, styles.tagInput]}
-                value={currentTag}
-                onChangeText={setCurrentTag}
-                placeholder="Digite uma tag"
-                placeholderTextColor="#9CA3AF"
-                onSubmitEditing={handleAddTag}
-                autoComplete="off"
-              />
-              <TouchableOpacity
-                onPress={handleAddTag}
-                style={styles.addTagButton}
+          <View style={styles.buttonRow}>
+            {currentStep > 0 && (
+              <PrimaryButton
+                onPress={handlePrevious}
+                variant="secondary"
+                style={styles.buttonHalf}
               >
-                <Text style={styles.addTagButtonText}>Adicionar</Text>
-              </TouchableOpacity>
-            </View>
-            {tags.length > 0 && (
-              <View style={styles.tagsContainer}>
-                {tags.map((tag, index) => (
-                  <View key={index} style={styles.tag}>
-                    <Text style={styles.tagText}>{tag}</Text>
-                    <TouchableOpacity onPress={() => handleRemoveTag(tag)}>
-                      <X color="#059669" size={14} />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </View>
+                Voltar
+              </PrimaryButton>
             )}
-            {errors.tags && (
-              <Text style={{ color: '#EF4444', fontSize: 12, marginTop: 4 }}>
-                {errors.tags.message?.toString()}
-              </Text>
+
+            {currentStep < steps.length - 1 ? (
+              <PrimaryButton
+                onPress={handleNext}
+                style={currentStep === 0 ? styles.buttonFull : styles.buttonHalf}
+              >
+                Próximo
+              </PrimaryButton>
+            ) : (
+              <PrimaryButton
+                onPress={handleSubmit(handleFinalSubmit)}
+                disabled={isSubmitting}
+                loading={isSubmitting}
+                style={styles.buttonHalf}
+              >
+                {isSubmitting ? 'Publicando...' : 'Publicar Ação'}
+              </PrimaryButton>
             )}
           </View>
-
-          <PrimaryButton
-            onPress={handleSubmit(onSubmit)}
-            disabled={isSubmitting}
-            loading={isSubmitting}
-          >
-            {isSubmitting ? 'Publicando...' : 'Publicar Ação'}
-          </PrimaryButton>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
