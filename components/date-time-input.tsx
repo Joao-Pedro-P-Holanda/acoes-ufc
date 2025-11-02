@@ -20,10 +20,8 @@ if (Platform.OS === 'ios' || Platform.OS === 'android') {
 interface DateTimeInputProps {
   control: Control<any>;
   name: string;
-  label: string;
   mode: 'date' | 'time';
   placeholder?: string;
-  required?: boolean;
   minimumDate?: Date;
 }
 
@@ -32,10 +30,8 @@ const isNativePlatform = Platform.OS === 'ios' || Platform.OS === 'android';
 export function DateTimeInput({
   control,
   name,
-  label,
   mode,
   placeholder,
-  required = false,
   minimumDate,
 }: DateTimeInputProps) {
   const [showPicker, setShowPicker] = useState(false);
@@ -79,14 +75,9 @@ export function DateTimeInput({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>
-        {label} {required && '*'}
-      </Text>
-      
       <Controller
         control={control}
         name={name}
-        rules={{ required }}
         render={({ field: { onChange, value } }) => (
           <>
             {isNativePlatform ? (
@@ -153,12 +144,6 @@ export function DateTimeInput({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#000000',
-    marginBottom: 8,
   },
   dateButton: {
     backgroundColor: '#FFFFFF',
