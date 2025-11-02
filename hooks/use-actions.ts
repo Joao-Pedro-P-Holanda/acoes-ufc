@@ -1,18 +1,15 @@
 import { CommunityAction } from '@/interfaces/community-action';
-import { useState, useEffect } from 'react';
 import { storage } from '@/utils/storage';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const STORAGE_KEY = 'community-actions';
 
 export function useActions(id: string | undefined = undefined) {
   const [actions, setActions] = useState<CommunityAction[]>([]);
   const [loading, setLoading] = useState(true);
+  const isInitialMount = useRef(true);
 
-  useEffect(() => {
-    loadActions();
-  }, []);
-
-  const loadActions = async () => {
+  const loadActions = useCallback(async () => {
     try {
       setLoading(true);
       // Try to load from storage first
@@ -20,9 +17,11 @@ export function useActions(id: string | undefined = undefined) {
 
       if (storedActions && storedActions.length > 0) {
         if (id) {
-          storedActions = storedActions.filter((value) => value.id == id)
+          storedActions = storedActions.filter((value) => value.id === id)
         }
         setActions(storedActions);
+      } else {
+        setActions([]);
       }
     } catch (error) {
       console.error('Failed to load actions:', error);
@@ -30,16 +29,32 @@ export function useActions(id: string | undefined = undefined) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      loadActions();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addAction = async (action: CommunityAction) => {
-    const newActions = [...actions, action];
-    setActions(newActions);
-
     try {
+      // Carrega as ações atuais do storage
+      const storedActions = await storage.get<CommunityAction[]>(STORAGE_KEY) || [];
+      const newActions = [...storedActions, action];
+      
+      // Salva no storage
       await storage.set(STORAGE_KEY, newActions);
+      
+      // Atualiza o estado local
+      setActions(newActions);
+      
+      console.log('Action saved successfully:', action.id);
     } catch (error) {
       console.error('Failed to save action:', error);
+      throw error;
     }
   };
 

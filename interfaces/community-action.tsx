@@ -11,6 +11,7 @@ export interface CommunityAction {
   tags: string[];
   location: string;
   isFull?: boolean;
+  isFree?: boolean;
   maxParticipants: number;
   price?: number;
   originalLink?: string;

@@ -1,22 +1,29 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-  FlatList,
-} from 'react-native';
-import { Plus } from 'lucide-react-native';
-import { ActionCard } from '../../components/action-card';
 import { useActions } from '@/hooks/use-actions';
 import { CommunityAction } from '@/interfaces/community-action';
-import { Link, useRouter } from 'expo-router';
+import { Link, useFocusEffect, useRouter } from 'expo-router';
+import { Plus } from 'lucide-react-native';
+import React, { useCallback } from 'react';
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { ActionCard } from '../../components/action-card';
 
 export default function HomeScreen() {
-  const { actions } = useActions();
+  const { actions, refresh } = useActions();
 
   const router = useRouter();
+
+  // Recarrega quando a tela recebe foco
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
 
   const getActionsByTag = () => {
     // TODO: consider an action in a single more relevant tag,
@@ -59,7 +66,7 @@ export default function HomeScreen() {
             <View style={styles.carouselItem}>
               <ActionCard
                 action={action}
-                onClick={() => router.navigate({ pathname: `actions/${action.id}` })}
+                onClick={() => router.navigate({ pathname: '/actions/[id]', params: { id: action.id } })}
               />
             </View>
           )}
