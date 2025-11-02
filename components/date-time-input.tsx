@@ -1,6 +1,6 @@
 import { Calendar, Clock } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldError } from 'react-hook-form';
 import {
   Platform,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { ErrorMessage } from './error-message';
 
 // Importação condicional do DateTimePicker apenas para mobile
 let DateTimePicker: any = null;
@@ -23,6 +24,8 @@ interface DateTimeInputProps {
   mode: 'date' | 'time';
   placeholder?: string;
   minimumDate?: Date;
+  error?: FieldError;
+  onBlurCustom?: () => void;
 }
 
 const isNativePlatform = Platform.OS === 'ios' || Platform.OS === 'android';
@@ -33,6 +36,8 @@ export function DateTimeInput({
   mode,
   placeholder,
   minimumDate,
+  error,
+  onBlurCustom,
 }: DateTimeInputProps) {
   const [showPicker, setShowPicker] = useState(false);
 
@@ -78,7 +83,7 @@ export function DateTimeInput({
       <Controller
         control={control}
         name={name}
-        render={({ field: { onChange, value } }) => (
+        render={({ field: { onChange, onBlur, value } }) => (
           <>
             {isNativePlatform ? (
               <>
@@ -107,6 +112,8 @@ export function DateTimeInput({
                           ? formatDate(selectedValue)
                           : formatTime(selectedValue);
                         onChange(formatted);
+                        onBlur();
+                        if (onBlurCustom) onBlurCustom();
                       }
                       if (event.type === 'dismissed') {
                         setShowPicker(false);
@@ -127,16 +134,22 @@ export function DateTimeInput({
                       : applyTimeMask(text);
                     onChange(masked);
                   }}
+                  onBlur={() => {
+                    onBlur();
+                    if (onBlurCustom) onBlurCustom();
+                  }}
                   placeholder={placeholderText}
                   placeholderTextColor="#9CA3AF"
                   keyboardType="numeric"
                   maxLength={maxLength}
+                  autoComplete="off"
                 />
               </View>
             )}
           </>
         )}
       />
+      <ErrorMessage error={error} />
     </View>
   );
 }
