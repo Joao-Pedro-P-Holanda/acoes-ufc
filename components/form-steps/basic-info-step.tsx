@@ -52,6 +52,23 @@ export function BasicInfoStep({
       </View>
 
       <View style={styles.formGroup}>
+        <Text style={styles.label}>Link Original (Opcional)</Text>
+        <TextInputField
+          control={control}
+          name="originalLink"
+          error={errors.originalLink}
+          placeholder="https://exemplo.com/evento"
+          placeholderTextColor="#9CA3AF"
+          keyboardType="url"
+          autoCapitalize="none"
+        />
+        <Text style={styles.hint}>
+          Link para mais informações sobre a ação (site, formulário, etc.)
+        </Text>
+      </View>
+
+
+      <View style={styles.formGroup}>
         <Text style={styles.label}>Tags *</Text>
         <View style={styles.tagInputRow}>
           <TextInput
