@@ -94,12 +94,8 @@ export default function CreateActionScreen() {
       await addAction(action);
       console.log('Action created, navigating...');
       
-      // Navega de volta e força reload
-      if (router.canGoBack()) {
-        router.back();
-      } else {
-        router.replace('/');
-      }
+
+      router.navigate({pathname:`/actions/${action.id}` })
     } catch (error) {
       console.error('Error creating action:', error);
       Alert.alert(
