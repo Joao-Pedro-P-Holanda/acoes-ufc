@@ -1,23 +1,24 @@
+import { DateTimeInput } from '@/components/date-time-input';
+import { useActions } from '@/hooks/use-actions';
+import { CommunityAction } from '@/interfaces/community-action';
+import { Picker } from '@react-native-picker/picker';
+import { Button } from '@react-navigation/elements';
+import CheckBox from 'expo-checkbox';
+import { useRouter } from "expo-router";
+import { X } from 'lucide-react-native';
 import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { v4 as uuidv4 } from 'uuid';
-import { X } from 'lucide-react-native';
-import { Picker } from '@react-native-picker/picker';
-import CheckBox from 'expo-checkbox';
-import { useActions } from '@/hooks/use-actions';
-import { useForm, Controller } from 'react-hook-form';
-import { useRouter } from "expo-router"
-import { CommunityAction } from '@/interfaces/community-action';
-import { Button } from '@react-navigation/elements';
 
 export default function CreateActionScreen() {
   const { control, handleSubmit, watch, setValue } = useForm<CommunityAction>({
@@ -30,11 +31,12 @@ export default function CreateActionScreen() {
 
   const isFree = watch('isFree');
   const tags = watch('tags') || [];
+  const startDate = watch('startDate');
 
   const onSubmit = async (action: CommunityAction) => {
     action.id = uuidv4();
     await addAction(action);
-    router.navigate({pathname:`actions/${action.id}`})
+    router.push(`/actions/${action.id}` as any);
   };
 
   const handleAddTag = () => {
@@ -50,6 +52,19 @@ export default function CreateActionScreen() {
   const handleRemoveTag = (tagToRemove: string) => {
     setValue('tags', tags.filter(tag => tag !== tagToRemove));
   };
+
+  const parseDate = (dateString: string): Date | undefined => {
+    if (!dateString) return undefined;
+    const parts = dateString.split('/');
+    if (parts.length === 3) {
+      return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    }
+    return undefined;
+  };
+
+  const minimumEndDate = parseDate(startDate);
+
+
 
   return (
     <KeyboardAvoidingView
@@ -100,81 +115,38 @@ export default function CreateActionScreen() {
           </View>
 
           <View style={styles.row}>
-            <View style={styles.halfWidth}>
-              <Text style={styles.label}>Data de Início *</Text>
-              <Controller
-                control={control}
-                name="startDate"
-                rules={{ required: true }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={styles.input}
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    placeholder="DD/MM/AAAA"
-                    placeholderTextColor="#9CA3AF"
-                  />
-                )}
-              />
-            </View>
-            <View style={styles.halfWidth}>
-              <Text style={styles.label}>Data de Fim *</Text>
-              <Controller
-                control={control}
-                name="endDate"
-                rules={{ required: true }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={styles.input}
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    placeholder="DD/MM/AAAA"
-                    placeholderTextColor="#9CA3AF"
-                  />
-                )}
-              />
-            </View>
+            <DateTimeInput
+              control={control}
+              name="startDate"
+              label="Data de Início"
+              mode="date"
+              required
+            />
+            <DateTimeInput
+              control={control}
+              name="endDate"
+              label="Data de Fim"
+              mode="date"
+              required
+              minimumDate={minimumEndDate}
+            />
           </View>
 
           <View style={styles.row}>
-            <View style={styles.halfWidth}>
-              <Text style={styles.label}>Horário de Início *</Text>
-              <Controller
-                control={control}
-                name="startTime"
-                rules={{ required: true }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={styles.input}
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    placeholder="HH:MM"
-                    placeholderTextColor="#9CA3AF"
-                  />
-                )}
-              />
-            </View>
-            <View style={styles.halfWidth}>
-              <Text style={styles.label}>Horário de Fim *</Text>
-              <Controller
-                control={control}
-                name="endTime"
-                rules={{ required: true }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={styles.input}
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    placeholder="HH:MM"
-                    placeholderTextColor="#9CA3AF"
-                  />
-                )}
-              />
-            </View>
+            <DateTimeInput
+              control={control}
+              name="startTime"
+              label="Horário de Início"
+              mode="time"
+              required
+            />
+            <DateTimeInput
+              control={control}
+              name="endTime"
+              label="Horário de Fim"
+              mode="time"
+              required
+            />
           </View>
 
           <View style={styles.formGroup}>
@@ -255,8 +227,8 @@ export default function CreateActionScreen() {
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   style={styles.input}
-                  value={value}
-                  onChangeText={onChange}
+                  value={value?.toString() || ''}
+                  onChangeText={(text) => onChange(parseInt(text) || 0)}
                   onBlur={onBlur}
                   placeholder="Ex: 50"
                   placeholderTextColor="#9CA3AF"
@@ -294,8 +266,8 @@ export default function CreateActionScreen() {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
                       style={styles.input}
-                      value={value}
-                      onChangeText={onChange}
+                      value={value?.toString() || ''}
+                      onChangeText={(text) => onChange(parseFloat(text) || 0)}
                       onBlur={onBlur}
                       placeholder="Ex: 25.00"
                       placeholderTextColor="#9CA3AF"
@@ -424,6 +396,31 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 16,
     color: '#000000',
+    outlineStyle: 'none' as any,
+  },
+  dateButton: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    outlineStyle: 'none' as any,
+  },
+  dateButtonText: {
+    fontSize: 16,
+    color: '#000000',
+  },
+  dateInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#000000',
+    padding: 0,
+    margin: 0,
+    outlineStyle: 'none' as any,
   },
   textArea: {
     minHeight: 80,
