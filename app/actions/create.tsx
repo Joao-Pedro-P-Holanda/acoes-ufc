@@ -3,6 +3,7 @@ import { NumberInputField } from '@/components/number-input-field';
 import { PrimaryButton } from '@/components/primary-button';
 import { TextInputField } from '@/components/text-input-field';
 import { useActions } from '@/hooks/use-actions';
+import { CommunityAction } from '@/interfaces/community-action';
 import { CommunityActionFormData, communityActionSchema } from '@/schemas/community-action.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Picker } from '@react-native-picker/picker';
@@ -30,6 +31,7 @@ export default function CreateActionScreen() {
     handleSubmit, 
     watch, 
     setValue,
+    trigger,
     formState: { errors, isSubmitting }
   } = useForm<CommunityActionFormData>({
     resolver: zodResolver(communityActionSchema) as any,
@@ -61,15 +63,42 @@ export default function CreateActionScreen() {
   const tags = watch('tags') || [];
   const startDate = watch('startDate');
 
+  // Handlers para validar campos cruzados ao perder foco
+  const handleStartDateBlur = async () => {
+    await trigger(['startDate', 'endDate']); // Valida ambas as datas
+  };
+
+  const handleEndDateBlur = async () => {
+    await trigger(['startDate', 'endDate']); // Valida ambas as datas
+  };
+
+  const handleStartTimeBlur = async () => {
+    await trigger(['startTime', 'endTime']); // Valida ambos os horários
+  };
+
+  const handleEndTimeBlur = async () => {
+    await trigger(['startTime', 'endTime']); // Valida ambos os horários
+  };
+
   const onSubmit = async (data: CommunityActionFormData) => {
     try {
-      const action = {
+      const action: CommunityAction = {
         ...data,
         id: uuidv4(),
+        isFull: false,
       };
-      await addAction(action as any);
-      router.push(`/actions/${action.id}` as any);
-    } catch {
+      console.log('Creating action:', action);
+      await addAction(action);
+      console.log('Action created, navigating...');
+      
+      // Navega de volta e força reload
+      if (router.canGoBack()) {
+        router.back();
+      } else {
+        router.replace('/');
+      }
+    } catch (error) {
+      console.error('Error creating action:', error);
       Alert.alert(
         'Erro',
         'Não foi possível criar a ação. Tente novamente.',
@@ -143,6 +172,8 @@ export default function CreateActionScreen() {
                 control={control}
                 name="startDate"
                 mode="date"
+                error={errors.startDate}
+                onBlurCustom={handleStartDateBlur}
               />
             </View>
             <View style={styles.halfWidth}>
@@ -152,6 +183,8 @@ export default function CreateActionScreen() {
                 name="endDate"
                 mode="date"
                 minimumDate={minimumEndDate}
+                error={errors.endDate}
+                onBlurCustom={handleEndDateBlur}
               />
             </View>
           </View>
@@ -163,6 +196,8 @@ export default function CreateActionScreen() {
                 control={control}
                 name="startTime"
                 mode="time"
+                error={errors.startTime}
+                onBlurCustom={handleStartTimeBlur}
               />
             </View>
             <View style={styles.halfWidth}>
@@ -171,6 +206,8 @@ export default function CreateActionScreen() {
                 control={control}
                 name="endTime"
                 mode="time"
+                error={errors.endTime}
+                onBlurCustom={handleEndTimeBlur}
               />
             </View>
           </View>
@@ -298,6 +335,7 @@ export default function CreateActionScreen() {
                 placeholder="Digite uma tag"
                 placeholderTextColor="#9CA3AF"
                 onSubmitEditing={handleAddTag}
+                autoComplete="off"
               />
               <TouchableOpacity
                 onPress={handleAddTag}
