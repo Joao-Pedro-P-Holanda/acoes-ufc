@@ -1,6 +1,6 @@
 import { useActions } from '@/hooks/use-actions';
 import { CommunityAction } from '@/interfaces/community-action';
-import { Link, useRouter, useFocusEffect } from 'expo-router';
+import { Link, useFocusEffect, useRouter } from 'expo-router';
 import { Plus } from 'lucide-react-native';
 import React, { useCallback } from 'react';
 import {
