@@ -1,23 +1,21 @@
-import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {
-  ArrowLeft,
   Calendar,
   Clock,
+  DollarSign,
+  ExternalLink,
   MapPin,
   Tag,
-  Users,
-  DollarSign,
-  ExternalLink
+  Trash2,
+  Users
 } from "lucide-react-native";
+import { Alert, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useActions } from "../../hooks/use-actions"; // Adjust the import path as needed
 
 export default function ActionDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const { actions } = useActions(id);
-
-  console.log
+  const { actions, deleteAction } = useActions(typeof id === 'string' ? id : undefined);
 
   if (!actions || !actions.length) {
     return (
@@ -30,7 +28,6 @@ export default function ActionDetailScreen() {
   }
 
   else {
-    console.log(actions);
 
     const action = actions[0];
 
@@ -53,6 +50,15 @@ export default function ActionDetailScreen() {
     const handleOpenLink = (url: string) => {
       Linking.openURL(url);
     };
+
+    const handleDeleteAction = async () => {
+      try {
+        await deleteAction(action.id);
+        router.back();
+      } catch {
+        Alert.alert("Erro", "Não foi possível remover a ação");
+      }
+    }
 
     return (
       <View style={styles.container}>
@@ -198,6 +204,13 @@ export default function ActionDetailScreen() {
               <Text style={styles.primaryButtonText}>
                 {action.isFull ? "Evento Lotado" : "Participar da Ação"}
               </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={handleDeleteAction}
+            >
+              <Trash2 size={18} color="#dc2626" style={styles.buttonIcon} />
+              <Text style={styles.deleteButtonText}>Remover Ação</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -385,5 +398,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#fff",
+  },
+  deleteButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#dc2626",
+    borderRadius: 8,
+    padding: 14,
+  },
+  deleteButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#dc2626",
   },
 });
