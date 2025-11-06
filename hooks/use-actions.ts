@@ -1,85 +1,97 @@
 import { CommunityAction } from '@/interfaces/community-action';
-import { storage } from '@/utils/storage';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { supabase } from '@/supabaseClient';
+import { normalizeTags } from '@/utils/normalize-tags';
+import { useEffect, useState } from 'react';
 
-const STORAGE_KEY = 'community-actions';
+const TABLE_NAME = 'CommunityAction';
 
-export function useActions(id: string | undefined = undefined) {
+export function useActions(id?: string) {
   const [actions, setActions] = useState<CommunityAction[]>([]);
   const [loading, setLoading] = useState(true);
-  const isInitialMount = useRef(true);
 
-  const loadActions = useCallback(async () => {
+  useEffect(() => {
+    loadActions();
+  }, [id]);
+
+  const loadActions = async () => {
     try {
       setLoading(true);
-      // Try to load from storage first
-      let storedActions = await storage.get<CommunityAction[]>(STORAGE_KEY);
 
-      if (storedActions && storedActions.length > 0) {
-        if (id) {
-          storedActions = storedActions.filter((value) => value.id === id)
-        }
-        setActions(storedActions);
-      } else {
-        setActions([]);
+      let query = supabase.from(TABLE_NAME).select('*');
+
+      if (id) {
+        query = query.eq('id', id);
       }
-    } catch (error) {
-      console.error('Failed to load actions:', error);
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error('Erro ao carregar ações:', error.message);
+        setActions([]);
+        return;
+      }
+
+      const normalized = (data || []).map(item => ({
+        ...item,
+        tags: normalizeTags((item as any).tags),
+      })) as CommunityAction[];
+
+      setActions(normalized);
+    } catch (err) {
+      console.error('Erro inesperado ao carregar ações:', err);
       setActions([]);
     } finally {
       setLoading(false);
     }
-  }, [id]);
-
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      loadActions();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
   const addAction = async (action: CommunityAction) => {
-    try {
-      // Carrega as ações atuais do storage
-      const storedActions = await storage.get<CommunityAction[]>(STORAGE_KEY) || [];
-      const newActions = [...storedActions, action];
-      
-      // Salva no storage
-      await storage.set(STORAGE_KEY, newActions);
-      
-      // Atualiza o estado local
-      setActions(newActions);
-      
-      console.log('Action saved successfully:', action.id);
-    } catch (error) {
-      console.error('Failed to save action:', error);
-      throw error;
+    const { data, error } = await supabase.from(TABLE_NAME).insert(action).select();
+    console.log('Dados inseridos:', action);
+    console.log('Resposta do Supabase:', data);
+    console.log('Erro do Supabase:', error);
+
+    if (error) {
+      console.error('Erro ao adicionar ação:', error.message);
+      return;
+    }
+
+    if (data) {
+      const newAction = data[0];
+      console.log('Ação adicionada com sucesso:', data);
+      setActions((prev) => [...prev, ...data]);
+      return newAction;
     }
   };
 
   const updateAction = async (updatedAction: CommunityAction) => {
-    const newActions = actions.map(a =>
-      a.id === updatedAction.id ? updatedAction : a
-    );
-    setActions(newActions);
+    const { data, error } = await supabase
+      .from(TABLE_NAME)
+      .update(updatedAction)
+      .eq('id', updatedAction.id)
+      .select();
 
-    try {
-      await storage.set(STORAGE_KEY, newActions);
-    } catch (error) {
-      console.error('Failed to update action:', error);
+    if (error) {
+      console.error('Erro ao atualizar ação:', error.message);
+      return;
+    }
+
+    if (data) {
+      setActions((prev) =>
+        prev.map((a) => (a.id === updatedAction.id ? data[0] : a))
+      );
     }
   };
 
   const deleteAction = async (actionId: string) => {
-    const newActions = actions.filter(a => a.id !== actionId);
-    setActions(newActions);
+    const { error } = await supabase.from(TABLE_NAME).delete().eq('id', actionId);
 
-    try {
-      await storage.set(STORAGE_KEY, newActions);
-    } catch (error) {
-      console.error('Failed to delete action:', error);
+    if (error) {
+      console.error('Erro ao deletar ação:', error.message);
+      return;
     }
+
+    setActions((prev) => prev.filter((a) => a.id !== actionId));
   };
 
   return {

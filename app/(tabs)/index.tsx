@@ -31,13 +31,32 @@ export default function HomeScreen() {
     const tagMap = new Map<string, CommunityAction[]>();
 
     actions.forEach((action) => {
-      action.tags.forEach((tag) => {
+  let tags: string[] = [];
+
+  // Garante que tags sempre seja um array
+  if (Array.isArray(action.tags)) {
+        tags = action.tags;
+      } else if (typeof action.tags === 'string') {
+        try {
+          const parsed = JSON.parse(action.tags);
+          if (Array.isArray(parsed)) {
+            tags = parsed;
+          } else {
+            tags = [action.tags];
+          }
+        } catch {
+          tags = [action.tags];
+        }
+      }
+
+      tags.forEach((tag) => {
         if (!tagMap.has(tag)) {
           tagMap.set(tag, []);
         }
         tagMap.get(tag)!.push(action);
       });
     });
+
     // Ordenar tags por número de ações (mais populares primeiro)
     return Array.from(tagMap.entries())
       .sort((a, b) => b[1].length - a[1].length)
