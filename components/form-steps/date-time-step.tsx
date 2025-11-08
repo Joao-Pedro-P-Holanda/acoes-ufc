@@ -1,10 +1,10 @@
 import { styles } from '@/app/actions/create.styles';
 import { DateTimeInput } from '@/components/date-time-input';
 import { CommunityActionFormData } from '@/schemas/community-action.schema';
-import { Picker } from '@react-native-picker/picker';
 import React from 'react';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
 import { Text, View } from 'react-native';
+import { FrequencySelector } from '../frequency-selector';
 
 interface DateTimeStepProps {
   control: Control<CommunityActionFormData>;
@@ -76,26 +76,25 @@ export function DateTimeStep({
 
       <View style={styles.formGroup}>
         <Text style={styles.label}>Frequência (opcional)</Text>
-        <View style={styles.pickerContainer}>
-          <Controller
-            control={control}
-            name="frequency"
-            render={({ field: { onChange, value } }) => (
-              <Picker
-                selectedValue={value}
-                onValueChange={onChange}
-                style={styles.picker}
-              >
-                <Picker.Item label="Selecione a frequência" value="" />
-                <Picker.Item label="Única" value="Única" />
-                <Picker.Item label="Diária" value="Diária" />
-                <Picker.Item label="Semanal" value="Semanal" />
-                <Picker.Item label="Quinzenal" value="Quinzenal" />
-                <Picker.Item label="Mensal" value="Mensal" />
-              </Picker>
-            )}
-          />
-        </View>
+        <Controller
+          control={control}
+          name="frequency"
+          render={({ field: { onChange, value } }) => (
+            <Controller
+              control={control}
+              name="startDate"
+              render={({ field: { value: startDateValue } }) => (
+                <FrequencySelector
+                  value={value}
+                  onChange={onChange}
+                  startDate={startDateValue}
+                  labelStyle={styles.label}
+                  inputStyle={styles.input}
+                />
+              )}
+            />
+          )}
+        />
       </View>
     </View>
   );

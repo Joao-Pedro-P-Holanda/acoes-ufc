@@ -2,13 +2,13 @@ import { formatDuration, type Duration } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {
-    Calendar,
-    CheckCircle,
-    Clock,
-    MapPin,
-    Trash2,
-    User,
-    Users
+  Calendar,
+  CheckCircle,
+  Clock,
+  MapPin,
+  Trash2,
+  User,
+  Users
 } from "lucide-react-native";
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useExtracurricularGroup } from "../../hooks/use-extracurricular-group";

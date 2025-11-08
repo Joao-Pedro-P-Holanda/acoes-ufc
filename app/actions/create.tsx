@@ -114,8 +114,10 @@ export default function CreateActionScreen() {
         ...(action.isFree ? {} : { price: action.price }),
       } as CommunityAction;
       if (action.isFree) {
-        delete actionToInsert.price; // remove price para não subir ao banco
+        actionToInsert.price = 0
       }
+
+      delete actionToInsert.isFree;
 
       const result = await addAction(actionToInsert);
 
