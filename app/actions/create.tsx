@@ -102,7 +102,7 @@ export default function CreateActionScreen() {
         name: action.name,
         description: action.description,
         startDate: action.startDate,
-        endDate: action.endDate,
+        endDate: action.endDate ?? null,
         startTime: action.startTime,
         endTime: action.endTime,
         frequency: action.frequency,
