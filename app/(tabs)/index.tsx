@@ -14,16 +14,9 @@ import {
 import { ActionCard } from '../../components/action-card';
 
 export default function HomeScreen() {
-  const { actions, refresh } = useActions();
+  const { actions } = useActions();
 
   const router = useRouter();
-
-  // Recarrega quando a tela recebe foco
-  useFocusEffect(
-    useCallback(() => {
-      refresh();
-    }, [refresh])
-  );
 
   const getActionsByTag = () => {
     // TODO: consider an action in a single more relevant tag,
@@ -31,10 +24,10 @@ export default function HomeScreen() {
     const tagMap = new Map<string, CommunityAction[]>();
 
     actions.forEach((action) => {
-  let tags: string[] = [];
+      let tags: string[] = [];
 
-  // Garante que tags sempre seja um array
-  if (Array.isArray(action.tags)) {
+      // Garante que tags sempre seja um array
+      if (Array.isArray(action.tags)) {
         tags = action.tags;
       } else if (typeof action.tags === 'string') {
         try {
