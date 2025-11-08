@@ -21,6 +21,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="actions/create" options={{ title: "Adicionar nova ação" }} />
         <Stack.Screen name="actions/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="extracurricular-groups/[id]" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
