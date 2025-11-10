@@ -84,18 +84,45 @@ export default function CreateActionScreen() {
   };
 
   const onSubmit = async (data: CommunityActionFormData) => {
+    data.startDate = new Date(data.startDate);
+    data.endDate = new Date(data.endDate);
     try {
       const action: CommunityAction = {
         ...data,
         id: uuidv4(),
-        isFull: false,
+        // Se isFree for true, consideramos price como 0 apenas localmente
+        ...(data.isFree ? { price: 0 } : {})
       };
-      console.log('Creating action:', action);
-      await addAction(action);
-      console.log('Action created, navigating...');
-      
 
-      router.navigate({pathname:`/actions/${action.id}` })
+      console.log('Creating action:', action);
+
+      // Cria a ação sem enviar price se isFree for true
+      
+      const actionToInsert = {
+        name: action.name,
+        description: action.description,
+        startDate: action.startDate,
+        endDate: action.endDate ?? null,
+        startTime: action.startTime,
+        endTime: action.endTime,
+        frequency: action.frequency,
+        contact: action.contact,
+        tags: action.tags,
+        location: action.location,
+        maxParticipants: action.maxParticipants,
+        originalLink: action.originalLink,
+        ...(action.isFree ? {} : { price: action.price }),
+      } as CommunityAction;
+      if (action.isFree) {
+        actionToInsert.price = 0
+      }
+
+      delete actionToInsert.isFree;
+
+      const result = await addAction(actionToInsert);
+
+      console.log('Action created, navigating...');
+      router.navigate({ pathname: `/actions/${result.id}` });
     } catch (error) {
       console.error('Error creating action:', error);
       Alert.alert(
@@ -105,6 +132,7 @@ export default function CreateActionScreen() {
       );
     }
   };
+
 
   const handleAddTag = () => {
     if (currentTag.trim()) {

@@ -35,10 +35,9 @@ export const communityActionSchema = z.object({
     .max(1000, 'A descrição deve ter no máximo 1000 caracteres'),
   startDate: z
     .string()
-    .min(1, 'A data de início é obrigatória')
-    .refine((val) => isValidDate(val), {
+    .refine((val) => !val || isValidDate(val), {
       message: 'Data inválida. Use o formato DD/MM/AAAA',
-    }),
+    }).optional(),
   endDate: z
     .string()
     .min(1, 'A data de fim é obrigatória')

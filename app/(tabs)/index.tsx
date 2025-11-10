@@ -14,24 +14,33 @@ import {
 import { ActionCard } from '../../components/action-card';
 
 export default function HomeScreen() {
-  const { actions, refresh } = useActions();
+  const { actions } = useActions();
 
   const router = useRouter();
-
-  // Recarrega quando a tela recebe foco
-  useFocusEffect(
-    useCallback(() => {
-      refresh();
-    }, [refresh])
-  );
 
   const getActionsByTag = () => {
     // TODO: consider an action in a single more relevant tag,
     // currently, if an action has more than one tag it will appear multiple times
     const tagMap = new Map<string, CommunityAction[]>();
 
-    (actions ?? []).forEach((action) => {
-      const tags = Array.isArray(action.tags) ? action.tags : [];
+    actions.forEach((action) => {
+      let tags: string[] = [];
+
+      // Garante que tags sempre seja um array
+      if (Array.isArray(action.tags)) {
+        tags = action.tags;
+      } else if (typeof action.tags === 'string') {
+        try {
+          const parsed = JSON.parse(action.tags);
+          if (Array.isArray(parsed)) {
+            tags = parsed;
+          } else {
+            tags = [action.tags];
+          }
+        } catch {
+          tags = [action.tags];
+        }
+      }
 
       tags.forEach((tag) => {
         if (!tagMap.has(tag)) {
@@ -40,6 +49,7 @@ export default function HomeScreen() {
         tagMap.get(tag)!.push(action);
       });
     });
+
     // Ordenar tags por número de ações (mais populares primeiro)
     return Array.from(tagMap.entries())
       .sort((a, b) => b[1].length - a[1].length)

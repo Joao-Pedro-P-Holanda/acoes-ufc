@@ -1,16 +1,17 @@
+import TimeString from "@/types/TimeString";
+
 export interface CommunityAction {
   id: string;
   name: string;
   description: string;
-  startDate: string;
-  endDate: string;
-  startTime: string;
-  endTime: string;
+  startDate: Date | string;
+  endDate: Date | string;
+  startTime: TimeString;
+  endTime: TimeString;
   frequency?: string;
   contact: string;
   tags: string[];
   location: string;
-  isFull?: boolean;
   isFree?: boolean;
   maxParticipants: number;
   price?: number;
