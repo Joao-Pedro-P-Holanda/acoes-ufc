@@ -16,7 +16,6 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
       }}>
-
       <Tabs.Screen
         name="index"
         options={{
@@ -24,9 +23,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
-
       <Tabs.Screen
-        name="cell/index"
+        name="extracurricular-groups"
         options={{
           title: 'Células',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="book.fill" color={color} />,

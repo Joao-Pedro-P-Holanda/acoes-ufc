@@ -1,7 +1,6 @@
 import {
   BasicInfoStep,
   DetailsStep,
-  GroupTypeStep,
   OrganizersStep
 } from "@/components/cell-steps";
 import { FormNavigationButtons } from "@/components/form-navigation-buttons";
@@ -48,7 +47,7 @@ export default function CreateCellScreen() {
     fetchProfessors();
   }, []);
 
-  const [currentStep, setCurrentStep] = useState(4);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const { control, handleSubmit, formState: { isSubmitting, errors }, trigger } = useForm({
     resolver: zodResolver(cellSchema),
@@ -117,14 +116,7 @@ export default function CreateCellScreen() {
 
           <FormStepper steps={steps} currentStep={currentStep} />
 
-          {currentStep === 1 && (
-            <GroupTypeStep
-              onOwnGroupSelect={handleOwnCellCreation}
-              onExternalGroupSelect={handleExternalCellCreation}
-            />
-          )}
-
-          {currentStep === 2 && (
+          {currentStep === 0 && (
             <BasicInfoStep
               control={control}
               errors={errors}
@@ -132,14 +124,14 @@ export default function CreateCellScreen() {
             />
           )}
 
-          {currentStep === 3 && (
+          {currentStep === 1 && (
             <OrganizersStep
               control={control}
               errors={errors}
             />
           )}
 
-          {currentStep === 4 && (
+          {currentStep === 2 && (
             <DetailsStep
               control={control}
               errors={errors}
