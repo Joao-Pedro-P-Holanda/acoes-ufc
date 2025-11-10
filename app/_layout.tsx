@@ -23,6 +23,7 @@ export default function RootLayout() {
         <Stack.Screen name="actions/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="extracurricular-groups/index" options={{ headerShown: false }} />
         <Stack.Screen name="extracurricular-groups/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="actions/create-cell" options={{ title: "Criar Célula" }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
