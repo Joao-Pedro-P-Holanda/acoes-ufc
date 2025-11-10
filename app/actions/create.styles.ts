@@ -28,6 +28,59 @@ export const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  groupOptionContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+    gap: 12,
+  },
+  cardGroupOptionContainer: {
+    borderRadius: 12,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+    flex: 1,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    backgroundColor: '#FFFFFF',
+    aspectRatio: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  addButton: {
+    backgroundColor: '#10B981',
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+   emptyMessage: {
+    color: '#9CA3AF',
+    fontSize: 14,
+    fontStyle: 'italic',
+    marginVertical: 12,
+  },
+  cancelButton: {
+    backgroundColor: '#EF4444',
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  cancelButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   scrollContent: {
     padding: 16,
     paddingBottom: 32,
@@ -133,6 +186,11 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#000000',
   },
+  navigationButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 24,
+  },
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -179,5 +237,70 @@ export const styles = StyleSheet.create({
   },
   buttonHalf: {
     flex: 1,
+  },
+  formTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  formSubtitle: {
+    fontSize: 16,
+    color: '#6B7280',
+    marginBottom: 32,
+    textAlign: 'center',
+  },
+  iconWrapper: {
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  optionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginTop: 8,
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  optionDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    textAlign: 'center',
+    paddingHorizontal: 8,
+  },
+});
+
+
+export const customPickerStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: 'green',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'blue',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputWeb: {
+    fontSize: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 9,
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: '#dfdbdbff',
+    paddingRight: 30, // to ensure the text is never behind the icon
   },
 });
