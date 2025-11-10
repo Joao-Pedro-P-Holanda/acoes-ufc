@@ -30,8 +30,10 @@ export default function HomeScreen() {
     // currently, if an action has more than one tag it will appear multiple times
     const tagMap = new Map<string, CommunityAction[]>();
 
-    actions.forEach((action) => {
-      action.tags.forEach((tag) => {
+    (actions ?? []).forEach((action) => {
+      const tags = Array.isArray(action.tags) ? action.tags : [];
+
+      tags.forEach((tag) => {
         if (!tagMap.has(tag)) {
           tagMap.set(tag, []);
         }
