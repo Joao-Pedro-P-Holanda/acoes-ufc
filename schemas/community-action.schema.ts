@@ -36,13 +36,13 @@ export const communityActionSchema = z.object({
   startDate: z
     .string()
     .refine((val) => !val || isValidDate(val), {
-      message: 'Data inválida. Use o formato DD/MM/AAAA',
+        error: 'Data inválida. Use o formato DD/MM/AAAA'
     }).optional(),
   endDate: z
     .string()
     .min(1, 'A data de fim é obrigatória')
     .refine((val) => isValidDate(val), {
-      message: 'Data inválida. Use o formato DD/MM/AAAA',
+        error: 'Data inválida. Use o formato DD/MM/AAAA'
     }),
   startTime: z
     .string()
@@ -65,21 +65,17 @@ export const communityActionSchema = z.object({
     .min(1, 'As informações de contato são obrigatórias')
     .min(5, 'As informações de contato devem ter no mínimo 5 caracteres')
     .max(200, 'As informações de contato devem ter no máximo 200 caracteres'),
-  maxParticipants: z
-    .number()
-    .int('O número deve ser um inteiro')
+  maxParticipants: z.int('O número deve ser um inteiro')
     .min(1, 'Deve haver pelo menos 1 participante')
     .max(10000, 'O número máximo de participantes é 10.000'),
-  isFree: z.boolean().default(false),
+  isFree: z.boolean().prefault(false),
   isFull: z.boolean().optional(),
   price: z
     .number()
     .min(0, 'O preço não pode ser negativo')
     .max(100000, 'O preço máximo é R$ 100.000,00')
     .optional(),
-  originalLink: z
-    .string()
-    .url('Link inválido')
+  originalLink: z.url('Link inválido')
     .optional()
     .or(z.literal('')),
   tags: z
@@ -101,9 +97,9 @@ export const communityActionSchema = z.object({
     return end >= start;
   },
   {
-    message: 'A data de fim não pode ser anterior à data de início',
     path: ['endDate'],
-  }
+      error: 'A data de fim não pode ser anterior à data de início'
+}
 )
 .refine(
   (data) => {
@@ -114,9 +110,9 @@ export const communityActionSchema = z.object({
     return true;
   },
   {
-    message: 'O preço é obrigatório para eventos pagos',
     path: ['price'],
-  }
+      error: 'O preço é obrigatório para eventos pagos'
+}
 )
 .refine(
   (data) => {
@@ -135,9 +131,9 @@ export const communityActionSchema = z.object({
     return endMinutes > startMinutes;
   },
   {
-    message: 'O horário de fim deve ser posterior ao horário de início',
     path: ['endTime'],
-  }
+      error: 'O horário de fim deve ser posterior ao horário de início'
+}
 );
 
 export type CommunityActionFormData = z.infer<typeof communityActionSchema>;
