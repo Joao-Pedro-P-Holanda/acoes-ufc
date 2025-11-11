@@ -11,7 +11,10 @@ export const cellSchema = z.object({
       name: z.string().min(1, 'O nome do organizador é obrigatório'),
     })
   ).min(1, 'Adicione pelo menos um organizador'),
-  frequency: z.enum(frequencyOptions, { errorMap: () => ({ message: 'Selecione uma frequência válida' }) }),
+  frequency: z.enum(frequencyOptions, { 
+    required_error: 'Selecione uma frequência válida',
+    invalid_type_error: 'Selecione uma frequência válida'
+  }),
   frequencyItems: z.array(
     z.object({
       day: z.string(),
@@ -25,7 +28,9 @@ export const cellSchema = z.object({
   description: z.string()
     .min(1, 'A descrição é obrigatória')
     .max(1000, 'A descrição deve ter no máximo 1000 caracteres'),
-  professorId: z.string({ invalid_type_error: 'O professor responsável é obrigatório' })
+  professorId: z.string({
+    required_error: 'O professor responsável é obrigatório'
+  })
     .min(1, 'Selecione um professor responsável'),
   location: z.string()
     .min(1, 'O local é obrigatório')
