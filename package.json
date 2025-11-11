@@ -35,7 +35,7 @@
     "expo-system-ui": "~6.0.8",
     "expo-web-browser": "~15.0.8",
     "lucide-react-native": "^0.548.0",
-    "react": "19.1.0",
+    "react": "19.2.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.66.0",
     "react-native": "0.82.1",
@@ -51,7 +51,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/react": "~19.1.0",
+    "@types/react": "~19.2.3",
     "@types/uuid": "^10.0.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
