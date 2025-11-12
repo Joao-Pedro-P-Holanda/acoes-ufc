@@ -65,14 +65,6 @@ export default function CreateCellScreen() {
     }
   });
 
-  const handleOwnCellCreation = () => {
-    setCurrentStep(2);
-  };
-
-  const handleExternalCellCreation = () => {
-    setCurrentStep(2);
-  };
-
   const handlePrevious = () => {
     setCurrentStep(prev => prev - 1);
   };
@@ -140,18 +132,15 @@ export default function CreateCellScreen() {
         </View>
 
         <View>
-
-          {currentStep > 1 && (
-            <FormNavigationButtons
-              currentStep={currentStep - 1}
-              totalSteps={steps.length}
-              onPrevious={handlePrevious}
-              onNext={handleNext}
-              onSubmit={handleSubmit(handleFinalSubmit)}
-              isSubmitting={isSubmitting}
-              submitLabel="Criar Célula"
-            />
-          )}
+          <FormNavigationButtons
+            currentStep={currentStep}
+            totalSteps={steps.length}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+            onSubmit={handleSubmit(handleFinalSubmit)}
+            isSubmitting={isSubmitting}
+            submitLabel="Criar Célula"
+          />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
