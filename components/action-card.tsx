@@ -1,22 +1,31 @@
+import { CommunityAction } from '@/interfaces/community-action';
+import { Calendar, Clock, MapPin, Tag, Users } from 'lucide-react-native';
 import React from 'react';
 import {
-  View,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
+  View,
 } from 'react-native';
-import { Calendar, Clock, MapPin, Tag, Users } from 'lucide-react-native';
-import { CommunityAction } from '@/interfaces/community-action';
 interface ActionCardProps {
   action: CommunityAction;
   onClick?: () => void;
 }
 
 export function ActionCard({ action, onClick }: ActionCardProps) {
-  const formatDate = (dateStr: string) => {
+  const formatDate = (dateStr?: string | null) => {
+    if (!dateStr) return "—"; 
+
     const date = new Date(dateStr);
-    return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
+
+    if (isNaN(date.getTime())) return "—";
+
+    return date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "short"
+    });
   };
+
 
   return (
     <TouchableOpacity
