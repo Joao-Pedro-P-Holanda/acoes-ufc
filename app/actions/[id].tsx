@@ -31,17 +31,32 @@ export default function ActionDetailScreen() {
 
     const action = actions[0];
 
-    const formatDate = (dateStr: string) => {
-      const [day, month, year] = dateStr.split('/');
+    const formatDate = (date?: Date | string | null) => {
+      if (!date) return "Não informado";
 
-      const date = new Date(Number(year), Number(month) - 1, Number(day));
+      let dateObj: Date;
 
-      return date.toLocaleDateString("pt-BR", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric"
-      });
-    };
+      if (date instanceof Date) {
+        dateObj = date;
+      } else if (typeof date === "string") {
+        // caso venha como string vazia, nula ou inválida
+        if (date.trim() === "") return "Não informado";
+        dateObj = new Date(date);
+      } else {
+        return "Não informado";
+      }
+
+      if (isNaN(dateObj.getTime())) {
+        return "Data inválida";
+      }
+
+  return dateObj.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+};
+
 
     const formatPrice = (price?: number) => {
       if (price === undefined || price === 0) {
