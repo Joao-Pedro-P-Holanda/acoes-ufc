@@ -18,7 +18,6 @@ interface StepFieldMap {
 }
 
 const steps = [
-  { title: 'Escolher o plano', description: 'Informe se deseja cadastrar uma célula própria ou compartilhar uma ação externa.' },
   { title: 'Informações básicas', description: 'Dados básicos da célula' },
   { title: 'Organizadores', description: 'Quem são os organizadores da célula' },
   { title: 'Detalhes', description: 'Dias, Local e contato' },
