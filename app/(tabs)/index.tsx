@@ -1,14 +1,12 @@
 import { useActions } from '@/hooks/use-actions';
 import { CommunityAction } from '@/interfaces/community-action';
-import { Link, useFocusEffect, useRouter } from 'expo-router';
-import { Plus } from 'lucide-react-native';
-import React, { useCallback } from 'react';
+import { useRouter } from 'expo-router';
+import React from 'react';
 import {
   FlatList,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { ActionCard } from '../../components/action-card';
@@ -116,15 +114,6 @@ export default function HomeScreen() {
           />
         )}
       </ScrollView>
-
-      <Link href={{ pathname: "/actions/create" }} asChild>
-        <TouchableOpacity
-          style={styles.fab}
-          activeOpacity={0.8}
-        >
-          <Plus color="#ffffff" size={28} />
-        </TouchableOpacity>
-      </Link>
     </View>
   );
 }
@@ -189,24 +178,5 @@ const styles = StyleSheet.create({
   carouselItem: {
     width: 300,
     marginRight: 12,
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 64,
-    right: 24,
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#10B981',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
   },
 });

@@ -9,10 +9,10 @@ const timeRegex = /^([01][0-9]|2[0-3]):([0-5][0-9])$/;
 // Função helper para validar data
 const isValidDate = (dateStr: string): boolean => {
   if (!dateRegex.test(dateStr)) return false;
-  
+
   const [day, month, year] = dateStr.split('/').map(Number);
   const date = new Date(year, month - 1, day);
-  
+
   return (
     date.getFullYear() === year &&
     date.getMonth() === month - 1 &&
@@ -68,7 +68,8 @@ export const communityActionSchema = z.object({
     .min(1, 'As informações de contato são obrigatórias')
     .min(5, 'As informações de contato devem ter no mínimo 5 caracteres')
     .max(200, 'As informações de contato devem ter no máximo 200 caracteres'),
-  maxParticipants: z.number().int('O número deve ser um inteiro')
+  maxParticipants: z.number()
+    .int('O número deve ser um inteiro')
     .min(1, 'Deve haver pelo menos 1 participante')
     .max(10000, 'O número máximo de participantes é 10.000'),
   isFree: z.boolean().default(false),
@@ -86,57 +87,57 @@ export const communityActionSchema = z.object({
     .min(1, 'Adicione pelo menos uma tag')
     .max(10, 'Máximo de 10 tags permitidas'),
 })
-.refine(
-  (data) => {
-    // Valida que a data de fim não é anterior à data de início
-    if (!data.startDate || !data.endDate) return true;
-    
-    const [startDay, startMonth, startYear] = data.startDate.split('/').map(Number);
-    const [endDay, endMonth, endYear] = data.endDate.split('/').map(Number);
-    
-    const start = new Date(startYear, startMonth - 1, startDay);
-    const end = new Date(endYear, endMonth - 1, endDay);
-    
-    return end >= start;
-  },
-{
-  message: 'A data de fim não pode ser anterior à data de início',
-  path: ['endDate']
-}
-)
-.refine(
-  (data) => {
-    // Se não é gratuito, o preço é obrigatório
-    if (data.isFree === false && (data.price === undefined || data.price === 0)) {
-      return false;
+  .refine(
+    (data) => {
+      // Valida que a data de fim não é anterior à data de início
+      if (!data.startDate || !data.endDate) return true;
+
+      const [startDay, startMonth, startYear] = data.startDate.split('/').map(Number);
+      const [endDay, endMonth, endYear] = data.endDate.split('/').map(Number);
+
+      const start = new Date(startYear, startMonth - 1, startDay);
+      const end = new Date(endYear, endMonth - 1, endDay);
+
+      return end >= start;
+    },
+    {
+      path: ['endDate'],
+      message: 'A data de fim não pode ser anterior à data de início'
     }
-    return true;
-  },
-{
-  message: 'O preço é obrigatório para eventos pagos',
-  path: ['price']
-}
-)
-.refine(
-  (data) => {
-    // Valida que o horário de fim não é anterior ao horário de início (se mesma data)
-    if (!data.startDate || !data.endDate || !data.startTime || !data.endTime) return true;
-    
-    // Só valida horário se for o mesmo dia
-    if (data.startDate !== data.endDate) return true;
-    
-    const [startHour, startMin] = data.startTime.split(':').map(Number);
-    const [endHour, endMin] = data.endTime.split(':').map(Number);
-    
-    const startMinutes = startHour * 60 + startMin;
-    const endMinutes = endHour * 60 + endMin;
-    
-    return endMinutes > startMinutes;
-  },
-{
-  message: 'O horário de fim deve ser posterior ao horário de início',
-  path: ['endTime']
-}
-);
+  )
+  .refine(
+    (data) => {
+      // Se não é gratuito, o preço é obrigatório
+      if (data.isFree === false && (data.price === undefined || data.price === 0)) {
+        return false;
+      }
+      return true;
+    },
+    {
+      path: ['price'],
+      message: 'O preço é obrigatório para eventos pagos'
+    }
+  )
+  .refine(
+    (data) => {
+      // Valida que o horário de fim não é anterior ao horário de início (se mesma data)
+      if (!data.startDate || !data.endDate || !data.startTime || !data.endTime) return true;
+
+      // Só valida horário se for o mesmo dia
+      if (data.startDate !== data.endDate) return true;
+
+      const [startHour, startMin] = data.startTime.split(':').map(Number);
+      const [endHour, endMin] = data.endTime.split(':').map(Number);
+
+      const startMinutes = startHour * 60 + startMin;
+      const endMinutes = endHour * 60 + endMin;
+
+      return endMinutes > startMinutes;
+    },
+    {
+      path: ['endTime'],
+      message: 'O horário de fim deve ser posterior ao horário de início'
+    }
+  );
 
 export type CommunityActionFormData = z.infer<typeof communityActionSchema>;
