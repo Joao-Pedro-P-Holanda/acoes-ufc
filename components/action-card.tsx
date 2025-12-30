@@ -13,10 +13,19 @@ interface ActionCardProps {
 }
 
 export function ActionCard({ action, onClick }: ActionCardProps) {
-  const formatDate = (dateStr: string) => {
+  const formatDate = (dateStr?: string | null) => {
+    if (!dateStr) return "—"; 
+
     const date = new Date(dateStr);
-    return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
+
+    if (isNaN(date.getTime())) return "—";
+
+    return date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "short"
+    });
   };
+
 
   return (
     <TouchableOpacity

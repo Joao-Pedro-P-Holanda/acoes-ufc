@@ -36,13 +36,16 @@ export const communityActionSchema = z.object({
   startDate: z
     .string()
     .refine((val) => !val || isValidDate(val), {
-      message: 'Data inválida. Use o formato DD/MM/AAAA'
+        message: 'Data inválida. Use o formato DD/MM/AAAA'
     }).optional(),
-  endDate: z
+    endDate: z
     .string()
-    .min(1, 'A data de fim é obrigatória')
-    .refine((val) => isValidDate(val), {
-      message: 'Data inválida. Use o formato DD/MM/AAAA'
+    .optional()
+    .refine((val) => {
+      if (!val) return true; 
+      return isValidDate(val);
+    }, {
+      message: "Data inválida. Use o formato DD/MM/AAAA"
     }),
   startTime: z
     .string()
