@@ -15,6 +15,7 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
+    boxShadow: '0px 2px 3px rgba(0,0,0,0.1)' as any,
     elevation: 4,
   },
   backButton: {
@@ -50,6 +51,7 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
+    boxShadow: '0px 2px 4px rgba(0,0,0,0.05)' as any,
     elevation: 2,
   },
   addButton: {

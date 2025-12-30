@@ -1,7 +1,7 @@
-import { styles } from '@/app/actions/create.styles';
 import { NumberInputField } from '@/components/number-input-field';
 import { TextInputField } from '@/components/text-input-field';
 import { CommunityActionFormData } from '@/schemas/community-action.schema';
+import { styles } from '@/styles/actions-create.styles';
 import CheckBox from 'expo-checkbox';
 import React from 'react';
 import { Control, Controller, FieldErrors } from 'react-hook-form';

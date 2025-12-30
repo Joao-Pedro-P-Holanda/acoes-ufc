@@ -1,6 +1,6 @@
-import { styles } from '@/app/actions/create.styles';
 import { DateTimeInput } from '@/components/date-time-input';
 import { CommunityActionFormData } from '@/schemas/community-action.schema';
+import { styles } from '@/styles/actions-create.styles';
 import { Picker } from '@react-native-picker/picker';
 import React from 'react';
 import { Control, Controller, FieldErrors } from 'react-hook-form';

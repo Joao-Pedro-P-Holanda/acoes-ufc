@@ -1,8 +1,8 @@
-import { styles } from '@/app/actions/create.styles';
+import { styles } from '@/styles/actions-create.styles';
+import { useRouter } from 'expo-router';
+import { Building2, Users } from "lucide-react-native";
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { Users, Building2 } from "lucide-react-native";
-import { useRouter } from 'expo-router';
 
 
 export default function FormSelector() {

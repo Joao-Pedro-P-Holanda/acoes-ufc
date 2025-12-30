@@ -2,10 +2,10 @@ import { ExtracurricularGroup } from '@/interfaces/extracurricular_group';
 import { Tag, Users } from 'lucide-react-native';
 import React from 'react';
 import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 interface ExtracurricularGroupCardProps {
@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+    boxShadow: '0px 1px 2px rgba(0,0,0,0.1)' as any,
     elevation: 2,
     marginBottom: 12,
   },

@@ -1,12 +1,12 @@
+import { CommunityAction } from '@/interfaces/community-action';
+import { Calendar, Clock, MapPin, Tag, Users } from 'lucide-react-native';
 import React from 'react';
 import {
-  View,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
+  View,
 } from 'react-native';
-import { Calendar, Clock, MapPin, Tag, Users } from 'lucide-react-native';
-import { CommunityAction } from '@/interfaces/community-action';
 interface ActionCardProps {
   action: CommunityAction;
   onClick?: () => void;
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+    boxShadow: '0px 1px 2px rgba(0,0,0,0.1)' as any,
     elevation: 2,
   },
   cardHeader: {

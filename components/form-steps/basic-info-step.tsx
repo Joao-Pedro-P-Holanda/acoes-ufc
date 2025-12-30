@@ -1,6 +1,6 @@
-import { styles } from '@/app/actions/create.styles';
 import { TextInputField } from '@/components/text-input-field';
 import { CommunityActionFormData } from '@/schemas/community-action.schema';
+import { styles } from '@/styles/actions-create.styles';
 import { X } from 'lucide-react-native';
 import React from 'react';
 import { Control, FieldErrors } from 'react-hook-form';

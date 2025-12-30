@@ -1,6 +1,6 @@
-import { styles } from '@/app/actions/create.styles';
 import { ErrorMessage } from '@/components/error-message';
 import { CellFormData } from '@/schemas/cell.schema';
+import { styles } from '@/styles/actions-create.styles';
 import { X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Control, FieldError, FieldErrors, useFieldArray } from 'react-hook-form';
