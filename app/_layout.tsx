@@ -31,24 +31,48 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="form-selector" options={{ title: "Adicionar novo evento" }} />
-        <Stack.Screen name="actions/create" options={{ title: "Compartilhar ação externa" }} />
-        <Stack.Screen name="actions/[id]" options={{ headerShown: false }} />
-        <Stack.Screen name="extracurricular-groups/[id]" options={{ headerShown: false }} />
-        <Stack.Screen name="extracurricular-groups/create" options={{ title: "Criar Célula de discentes" }} />
+        <Stack.Screen
+          name="(tabs)"
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="form-selector"
+          options={{ title: "Adicionar novo evento" }}
+        />
+
+        <Stack.Screen
+          name="actions/create"
+          options={{ title: "Compartilhar ação externa" }}
+        />
+
+        <Stack.Screen
+          name="actions/[id]"
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="extracurricular-groups/[id]"
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="extracurricular-groups/create"
+          options={{ title: "Criar Célula de discentes" }}
+        />
       </Stack>
 
-      {shouldShowFab && <Link href={{ pathname: "/form-selector" }} asChild>
-
-        <TouchableOpacity
-          style={styles.fab}
-          activeOpacity={0.8}
-        >
-          <Plus color="#ffffff" size={28} />
-        </TouchableOpacity>
-      </Link>
+      {shouldShowFab &&
+        <Link href={{ pathname: "/form-selector" }} asChild>
+          <TouchableOpacity
+            style={styles.fab}
+            activeOpacity={0.8}
+          >
+            <Plus color="#ffffff" size={28} />
+          </TouchableOpacity>
+        </Link>
       }
+
       <StatusBar style="auto" />
     </ThemeProvider>
   );
