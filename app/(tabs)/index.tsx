@@ -1,3 +1,4 @@
+import { RecommendationCarousel } from '@/components/recommendation-carousel';
 import { useActions } from '@/hooks/use-actions';
 import { CommunityAction } from '@/interfaces/community-action';
 import { useRouter } from 'expo-router';
@@ -10,9 +11,14 @@ import {
   View,
 } from 'react-native';
 import { ActionCard } from '../../components/action-card';
+import useRecommendations from '@/hooks/use-recommendations';
 
 export default function HomeScreen() {
   const { actions } = useActions();
+
+  const { recommendations } = useRecommendations()
+  console.log("recomendations", recommendations)
+
 
   const router = useRouter();
 
@@ -93,6 +99,9 @@ export default function HomeScreen() {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
       >
+        <Text style={styles.sectionTitle}>Recomendações</Text>
+        <RecommendationCarousel items={recommendations} />
+
         <Text style={styles.title}>Ações Recentes</Text>
 
         {actions.length === 0 ? (
@@ -129,6 +138,12 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 16,
     paddingBottom: 100,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#000000',
+    marginBottom: 12,
   },
   title: {
     fontSize: 24,
