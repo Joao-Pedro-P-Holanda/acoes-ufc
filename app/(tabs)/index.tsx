@@ -1,9 +1,11 @@
 import { RecommendationCarousel } from '@/components/recommendation-carousel';
 import { useActions } from '@/hooks/use-actions';
+import useRecommendations from '@/hooks/use-recommendations';
 import { CommunityAction } from '@/interfaces/community-action';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  Animated,
   FlatList,
   ScrollView,
   StyleSheet,
@@ -11,7 +13,6 @@ import {
   View,
 } from 'react-native';
 import { ActionCard } from '../../components/action-card';
-import useRecommendations from '@/hooks/use-recommendations';
 
 export default function HomeScreen() {
   const { actions } = useActions();
@@ -22,25 +23,39 @@ export default function HomeScreen() {
 
   const router = useRouter();
 
+  const [showSplash, setShowSplash] = useState(true);
+
+  const opacity = useRef(new Animated.Value(1)).current;
+  const scale = useRef(new Animated.Value(0.9)).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.spring(scale, {
+        toValue: 1,
+        friction: 5,
+        useNativeDriver: true,
+      }),
+      Animated.delay(800),
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start(() => setShowSplash(false));
+  }, []);
+
   const getActionsByTag = () => {
-    // TODO: consider an action in a single more relevant tag,
-    // currently, if an action has more than one tag it will appear multiple times
     const tagMap = new Map<string, CommunityAction[]>();
 
     actions.forEach((action) => {
       let tags: string[] = [];
 
-      // Garante que tags sempre seja um array
       if (Array.isArray(action.tags)) {
         tags = action.tags;
       } else if (typeof action.tags === 'string') {
         try {
           const parsed = JSON.parse(action.tags);
-          if (Array.isArray(parsed)) {
-            tags = parsed;
-          } else {
-            tags = [action.tags];
-          }
+          tags = Array.isArray(parsed) ? parsed : [action.tags];
         } catch {
           tags = [action.tags];
         }
@@ -54,10 +69,9 @@ export default function HomeScreen() {
       });
     });
 
-    // Ordenar tags por número de ações (mais populares primeiro)
     return Array.from(tagMap.entries())
       .sort((a, b) => b[1].length - a[1].length)
-      .slice(0, 5); // Pegar apenas as 5 tags mais populares
+      .slice(0, 5);
   };
 
   const tagSections = getActionsByTag();
@@ -82,7 +96,12 @@ export default function HomeScreen() {
             <View style={styles.carouselItem}>
               <ActionCard
                 action={action}
-                onClick={() => router.navigate({ pathname: '/actions/[id]', params: { id: action.id } })}
+                onClick={() =>
+                  router.navigate({
+                    pathname: '/actions/[id]',
+                    params: { id: action.id },
+                  })
+                }
               />
             </View>
           )}
@@ -123,6 +142,25 @@ export default function HomeScreen() {
           />
         )}
       </ScrollView>
+
+      {showSplash && (
+        <Animated.View
+          style={[
+            styles.splashContainer,
+            { opacity },
+          ]}
+        >
+          <Animated.Image
+            source={require('@/assets/images/icon.jpg')}
+            style={{
+              width: 180,
+              height: 180,
+              transform: [{ scale }],
+            }}
+            resizeMode="contain"
+          />
+        </Animated.View>
+      )}
     </View>
   );
 }
@@ -193,5 +231,12 @@ const styles = StyleSheet.create({
   carouselItem: {
     width: 300,
     marginRight: 12,
+  },
+  splashContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#121214',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 999,
   },
 });
