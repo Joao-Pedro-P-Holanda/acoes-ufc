@@ -1,7 +1,7 @@
-import { styles } from '@/app/actions/create.styles';
 import { SelectPicker } from '@/components/professor-picker';
 import { TextInputField } from '@/components/text-input-field';
 import { CellFormData, frequencyOptions } from '@/schemas/cell.schema';
+import { styles } from '@/styles/actions-create.styles';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react-native';
 import React from 'react';

@@ -7,11 +7,12 @@ import { FormNavigationButtons } from "@/components/form-navigation-buttons";
 import { FormStepper } from "@/components/form-stepper";
 import { CellFields, CellFormData, cellSchema } from "@/schemas/cell.schema";
 import { getProfessors, registerCell } from "@/services/cell";
+import { styles } from "@/styles/extracurricular-groups-create.styles";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
-import { styles } from "./create.styles";
 
 interface StepFieldMap {
   [key: number]: CellFields;
@@ -37,6 +38,8 @@ export default function CreateCellScreen() {
   }
 
   const [professorsList, setProfessorsList] = useState<any[]>([]);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProfessors = async () => {
@@ -82,7 +85,7 @@ export default function CreateCellScreen() {
     const response = await registerCell(data);
 
     if (response.success) {
-      console.log('Célula criada com sucesso! ID:', response.id);
+      router.push('/');
     } else {
       console.log('Falha ao criar a célula.');
     }

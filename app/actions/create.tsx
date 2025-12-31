@@ -6,6 +6,7 @@ import { PrimaryButton } from '@/components/primary-button';
 import { useActions } from '@/hooks/use-actions';
 import { CommunityAction } from '@/interfaces/community-action';
 import { CommunityActionFormData, communityActionSchema } from '@/schemas/community-action.schema';
+import { styles } from '@/styles/actions-create.styles';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from "expo-router";
 import React, { useState } from 'react';
@@ -18,7 +19,6 @@ import {
   View,
 } from 'react-native';
 import { v4 as uuidv4 } from 'uuid';
-import { styles } from './create.styles';
 
 export default function CreateActionScreen() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -35,7 +35,7 @@ export default function CreateActionScreen() {
     defaultValues: {
       isFree: false,
       tags: [],
-      frequency: undefined,
+      frequency: null,
       name: '',
       description: '',
       startDate: '',

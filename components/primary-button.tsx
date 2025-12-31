@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
 interface PrimaryButtonProps extends TouchableOpacityProps {
   children: React.ReactNode;
@@ -28,9 +28,18 @@ export function PrimaryButton({
       disabled={isDisabled}
       {...props}
     >
-      <Text style={[styles.text, variant === 'secondary' && styles.secondaryText]}>
-        {children}
-      </Text>
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="small" color={variant === 'primary' ? '#FFFFFF' : '#10B981'} />
+          <Text style={[styles.text, variant === 'secondary' && styles.secondaryText, styles.loadingText]}>
+            {children}
+          </Text>
+        </View>
+      ) : (
+        <Text style={[styles.text, variant === 'secondary' && styles.secondaryText]}>
+          {children}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 }
@@ -63,5 +72,12 @@ const styles = StyleSheet.create({
   },
   secondaryText: {
     color: '#10B981',
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginLeft: 8,
   },
 });
