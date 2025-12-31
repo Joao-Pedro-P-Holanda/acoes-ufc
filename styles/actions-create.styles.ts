@@ -34,6 +34,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     width: '100%',
+    paddingHorizontal: 16,
     gap: 12,
   },
   cardGroupOptionContainer: {
@@ -291,7 +292,7 @@ export const customPickerStyles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: 'blue',
+    borderColor: '#dfdbdbff',
     borderRadius: 8,
     color: 'black',
     paddingRight: 30, // to ensure the text is never behind the icon
