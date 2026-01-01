@@ -4,13 +4,13 @@ import type { ExtracurricularGroup } from '@/interfaces/extracurricular_group';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    FlatList,
+    RefreshControl,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 export default function ExtracurricularGroupsListScreen() {
@@ -101,13 +101,6 @@ export default function ExtracurricularGroupsListScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Grupos Extracurriculares</Text>
-        <Text style={styles.headerSubtitle}>
-          {totalCount !== null ? totalCount : groups.length} {totalCount === 1 ? 'grupo' : 'grupos'} encontrado{totalCount === 1 ? '' : 's'}
-        </Text>
-      </View>
-
       <FlatList
         data={groups}
         renderItem={renderItem}
@@ -138,24 +131,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
-  },
-  header: {
-    backgroundColor: '#FFFFFF',
-    paddingTop: 60,
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 4,
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#6B7280',
   },
   listContent: {
     padding: 16,

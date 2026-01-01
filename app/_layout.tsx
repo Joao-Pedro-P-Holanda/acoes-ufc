@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 
+import { UserMenuButton } from '@/components/app-header';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Plus } from 'lucide-react-native';
 import { StyleSheet, TouchableOpacity } from 'react-native';
@@ -48,12 +49,22 @@ export default function RootLayout() {
 
         <Stack.Screen
           name="actions/[id]"
-          options={{ headerShown: false }}
+          options={{
+            headerShown: true,
+            headerTitle: 'Ações UFC',
+            headerTitleAlign: 'left',
+            headerRight: () => <UserMenuButton />,
+          }}
         />
 
         <Stack.Screen
           name="extracurricular-groups/[id]"
-          options={{ headerShown: false }}
+          options={{
+            headerShown: true,
+            headerTitle: 'Ações UFC',
+            headerTitleAlign: 'left',
+            headerRight: () => <UserMenuButton />,
+          }}
         />
 
         <Stack.Screen
