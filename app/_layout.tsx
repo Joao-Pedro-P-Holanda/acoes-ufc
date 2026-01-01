@@ -1,13 +1,12 @@
 import 'react-native-get-random-values';
 
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Link, Stack, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 
 import { UserMenuButton } from '@/components/app-header';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Plus } from 'lucide-react-native';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -16,7 +15,6 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const pathname = usePathname();
 
   const routesWithFab = [
@@ -30,7 +28,7 @@ export default function RootLayout() {
   );
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DefaultTheme}>
       <Stack>
         <Stack.Screen
           name="(tabs)"
