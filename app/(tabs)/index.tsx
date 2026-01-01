@@ -18,31 +18,9 @@ export default function HomeScreen() {
   const { actions } = useActions();
 
   const { recommendations } = useRecommendations()
-  console.log("recomendations", recommendations)
 
 
   const router = useRouter();
-
-  const [showSplash, setShowSplash] = useState(true);
-
-  const opacity = useRef(new Animated.Value(1)).current;
-  const scale = useRef(new Animated.Value(0.9)).current;
-
-  useEffect(() => {
-    Animated.sequence([
-      Animated.spring(scale, {
-        toValue: 1,
-        friction: 5,
-        useNativeDriver: true,
-      }),
-      Animated.delay(800),
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-    ]).start(() => setShowSplash(false));
-  }, []);
 
   const getActionsByTag = () => {
     const tagMap = new Map<string, CommunityAction[]>();
@@ -143,25 +121,6 @@ export default function HomeScreen() {
           />
         )}
       </ScrollView>
-
-      {showSplash && (
-        <Animated.View
-          style={[
-            styles.splashContainer,
-            { opacity },
-          ]}
-        >
-          <Animated.Image
-            source={require('@/assets/images/icon.jpg')}
-            style={{
-              width: 180,
-              height: 180,
-              transform: [{ scale }],
-            }}
-            resizeMode="contain"
-          />
-        </Animated.View>
-      )}
     </View>
   );
 }
