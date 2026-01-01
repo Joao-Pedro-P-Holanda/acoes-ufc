@@ -29,6 +29,14 @@ export function DetailsStep({ control, errors }: DetailsStepProps) {
 
   const [showFormAddDay, setShowFormAddDay] = React.useState(false);
   const frequencyValue = useWatch({ control, name: 'frequency' });
+  const startDateValue = useWatch({ control, name: 'startDate' });
+
+  const parseDateString = (value?: string): Date | undefined => {
+    if (!value) return undefined;
+    const parts = value.split('/').map(Number);
+    if (parts.length !== 3) return undefined;
+    return new Date(parts[2], parts[1] - 1, parts[0]);
+  };
 
   const handleAddDay = (day: string, startTime: string, endTime: string) => {
     if (day && startTime && endTime) {
@@ -59,6 +67,15 @@ export function DetailsStep({ control, errors }: DetailsStepProps) {
       </View>
 
       <View style={styles.formGroup}>
+        <Text style={styles.label}>Categoria</Text>
+        <TextInputField
+          control={control}
+          name="category"
+          placeholder="Ex: Estudos, Esportes, Música"
+        />
+      </View>
+
+      <View style={styles.formGroup}>
         <Text style={styles.label}>Frequência *</Text>
         <SelectPicker
           control={control}
@@ -66,6 +83,29 @@ export function DetailsStep({ control, errors }: DetailsStepProps) {
           error={errors.frequency as FieldError}
           items={frequencyItems}
           placeholder="Selecione a frequência"
+        />
+      </View>
+
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>Data de Início *</Text>
+        <DateTimeInput
+          control={control}
+          name="startDate"
+          mode="date"
+          placeholder="DD/MM/AAAA"
+          error={errors.startDate as FieldError}
+        />
+      </View>
+
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>Data de Fim *</Text>
+        <DateTimeInput
+          control={control}
+          name="endDate"
+          mode="date"
+          placeholder="DD/MM/AAAA"
+          minimumDate={parseDateString(startDateValue)}
+          error={errors.endDate as FieldError}
         />
       </View>
 

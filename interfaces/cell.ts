@@ -11,13 +11,21 @@ export interface FrequencyItem {
 }
 
 export interface Cell {
-  organizers: CellOrganizer[];
+  id?: string;
+  organizers?: CellOrganizer[];
   name: string;
-  description: string;
-  frequency: 'Semanal' | 'Mensal';
-  frequencyItems: FrequencyItem[];
-  location: string;
-  professorId: string;
+  description?: string;
+  category?: string;
+  location?: string;
+  professorId?: string | number;
+  // Stored in DB as interval (Postgres). Use a string such as '1 week' or ISO duration if needed.
+  frequency?: string;
+  // Used to build `allocated_times` (public.scheduled_time[])
+  frequencyItems?: FrequencyItem[];
+  startDate?: string; // 'DD/MM/YYYY'
+  endDate?: string;   // 'DD/MM/YYYY'
+  allocated_times?: { day: string; start_time: string; end_time: string }[];
+  approved?: boolean;
 }
 
 export interface Organizer {

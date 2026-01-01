@@ -119,8 +119,9 @@ export default function HomeScreen() {
         contentContainerStyle={styles.scrollContent}
       >
         <Text style={styles.sectionTitle}>Recomendações</Text>
+        
         <RecommendationCarousel items={recommendations} />
-
+        
         <Text style={styles.title}>Ações Recentes</Text>
 
         {actions.length === 0 ? (
@@ -231,6 +232,9 @@ const styles = StyleSheet.create({
   carouselItem: {
     width: 300,
     marginRight: 12,
+    marginLeft: 2,
+    marginTop: 2,
+    marginBottom: 2,
   },
   splashContainer: {
     ...StyleSheet.absoluteFillObject,
