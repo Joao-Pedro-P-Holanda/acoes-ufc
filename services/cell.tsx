@@ -84,10 +84,10 @@ export const registerCell = async (data: Cell): Promise<{ success: boolean; id: 
 
 export const getCategories = async (): Promise<string[]> => {
   const mockData = [
-    'Academic Support',
-    'Career Development',
-    'Health & Wellness',
-    'Hobbies & Interests',
+    'Estudos',
+    'Esportes',
+    'Saúde & Bem-estar',
+    'Hobbies & Interesses',
   ];
 
   return new Promise<string[]>(resolve => {

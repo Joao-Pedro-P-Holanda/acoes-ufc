@@ -40,7 +40,6 @@ export const cellSchema = z.object({
     .min(1, 'O nome é obrigatório')
     .max(100, 'O nome deve ter no máximo 100 caracteres'),
   description: z.string()
-    .min(1, 'A descrição é obrigatória')
     .max(1000, 'A descrição deve ter no máximo 1000 caracteres'),
   category: z.string().max(100, 'A categoria deve ter no máximo 100 caracteres').optional(),
   professorId: z.string().min(1, 'O professor responsável é obrigatório'),
