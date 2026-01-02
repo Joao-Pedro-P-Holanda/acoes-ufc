@@ -34,7 +34,7 @@ export function BasicInfoStep({
       </View>
 
       <View style={styles.formGroup}>
-        <Text style={styles.label}>Descrição *</Text>
+        <Text style={styles.label}>Descrição</Text>
         <TextInputField
           control={control}
           name="description"

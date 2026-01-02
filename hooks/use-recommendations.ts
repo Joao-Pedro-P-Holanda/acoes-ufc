@@ -57,7 +57,8 @@ export default function useRecommendations() {
       try {
         const result = await getRecommendations();
         if (!cancelled) setRecommendations(result);
-      } catch {
+      } catch (error) {
+        console.log('Error fetching recommendations:', error);
         if (!cancelled) Alert.alert('Falha ao carregar recomendações');
       } finally {
         if (!cancelled) setLoading(false);

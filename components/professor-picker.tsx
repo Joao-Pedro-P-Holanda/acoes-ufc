@@ -1,7 +1,7 @@
 import { customPickerStyles } from '@/styles/actions-create.styles';
 import React, { Dispatch, SetStateAction } from 'react';
 import { Control, Controller, FieldError, FieldValues, Path } from 'react-hook-form';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import RNPickerSelect, { Item } from 'react-native-picker-select';
 import { ErrorMessage } from './error-message';
 
@@ -31,10 +31,10 @@ export function SelectPicker<T extends FieldValues>({
             onValueChange={(selectedValue) => {
               onChange(selectedValue);
             }}
-            value={value ?? null}
+            value={Platform.OS === 'ios' ? (value ?? '') : (value ?? null)}
             items={items}
             style={customPickerStyles}
-            placeholder={{ label: placeholder, value: null }}
+            placeholder={{ label: placeholder, value: Platform.OS === 'ios' ? '' : null }}
             useNativeAndroidPickerStyle={false}
           />
         )}
@@ -64,10 +64,10 @@ export function SimpleSelectPicker({
         onValueChange={(selectedValue) => {
           onValueChange(selectedValue);
         }}
-        value={value ?? null}
+        value={Platform.OS === 'ios' ? (value ?? '') : (value ?? null)}
         items={items}
         style={customPickerStyles}
-        placeholder={{ label: placeholder, value: null }}
+        placeholder={{ label: placeholder, value: Platform.OS === 'ios' ? '' : null }}
         useNativeAndroidPickerStyle={false}
       />
     </View>

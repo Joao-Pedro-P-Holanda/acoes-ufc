@@ -27,7 +27,7 @@ const steps = [
 const stepFields: StepFieldMap = {
   2: ['name', 'description', 'professorId'] as CellFields,
   3: ['organizers'] as CellFields,
-  4: ['location', 'frequency', 'frequencyItems'] as CellFields,
+  4: ['location', 'category', 'frequency', 'frequencyItems', 'startDate', 'endDate'] as CellFields,
 }
 
 export default function CreateCellScreen() {
@@ -59,10 +59,13 @@ export default function CreateCellScreen() {
     defaultValues: {
       name: '',
       description: '',
+      category: '',
       professorId: '',
       location: '',
       frequency: 'Semanal' as const,
       frequencyItems: [],
+      startDate: '',
+      endDate: '',
       organizers: [currentUserMockData],
     }
   });
