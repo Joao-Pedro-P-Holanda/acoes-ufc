@@ -3,14 +3,13 @@ import { useActions } from '@/hooks/use-actions';
 import useRecommendations from '@/hooks/use-recommendations';
 import { CommunityAction } from '@/interfaces/community-action';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import {
-  Animated,
   FlatList,
   ScrollView,
   StyleSheet,
   Text,
-  View,
+  View
 } from 'react-native';
 import { ActionCard } from '../../components/action-card';
 
@@ -96,7 +95,7 @@ export default function HomeScreen() {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
       >
-        <Text style={styles.sectionTitle}>Recomendações</Text>
+        {/* <Text style={styles.sectionTitle}>Recomendações</Text> */}
         
         <RecommendationCarousel items={recommendations} />
         
@@ -165,10 +164,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   sectionsContainer: {
-    gap: 24,
   },
   tagSection: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   tagHeader: {
     flexDirection: 'row',
