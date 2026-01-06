@@ -1,4 +1,4 @@
-import { Recommendation, RecommendationWithImage } from '@/types/recommendation';
+import { RecommendationWithImage } from '@/types/recommendation';
 import React, { useMemo } from 'react';
 import {
   Dimensions,
@@ -14,13 +14,13 @@ type Props = {
   items: RecommendationWithImage[];
 };
 
-const HORIZONTAL_PADDING = 16;
+const HORIZONTAL_PADDING = 0;
 const CARD_GAP = 12;
 
 export function RecommendationCarousel({ items }: Props) {
   const cardWidth = useMemo(() => {
     const windowWidth = Dimensions.get('window').width;
-    return Math.min(340, windowWidth - HORIZONTAL_PADDING * 2);
+    return windowWidth - 32;
   }, []);
 
   const renderItem = ({ item }: ListRenderItemInfo<RecommendationWithImage>) => {
@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
   listContent: {
     paddingHorizontal: HORIZONTAL_PADDING,
     paddingRight: HORIZONTAL_PADDING - CARD_GAP,
+    marginBottom: 20
   },
   cardWrapper: {
     height: 160,
